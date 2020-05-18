@@ -1,0 +1,10 @@
+{
+    "presets": [
+        [
+            "@babel/env",
+            "@babel/preset-flow"
+        ]
+    ],
+    "sourceMaps": "inline",
+    "retainLines": true
+}

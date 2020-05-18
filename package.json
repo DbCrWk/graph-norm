@@ -4,7 +4,9 @@
   "description": "Graph normalization",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "babel-node index.js",
+    "flow": "flow"
   },
   "repository": {
     "type": "git",
@@ -18,5 +20,20 @@
   "bugs": {
     "url": "https://github.com/DbCrWk/graph-norm/issues"
   },
-  "homepage": "https://github.com/DbCrWk/graph-norm#readme"
+  "homepage": "https://github.com/DbCrWk/graph-norm#readme",
+  "dependencies": {
+    "@babel/cli": "7.8.4",
+    "@babel/core": "7.9.6",
+    "@babel/node": "7.8.7",
+    "@babel/polyfill": "7.8.7",
+    "@babel/preset-env": "7.9.6",
+    "@babel/preset-flow": "7.9.0",
+    "babel-eslint": "10.1.0",
+    "eslint": "7.0.0",
+    "eslint-config-airbnb-base": "14.1.0",
+    "eslint-plugin-flowtype": "5.1.0",
+    "eslint-plugin-import": "2.20.2",
+    "flow-bin": "0.125.1",
+    "prettier-eslint": "9.0.1"
+  }
 }

@@ -1,0 +1,20 @@
+[ignore]
+<PROJECT_ROOT>/node_modules/.*
+
+[include]
+
+[libs]
+tool/flow-typed
+tool/flow-def
+
+[lints]
+
+[options]
+include_warnings=true
+suppress_comment= \\(.\\|\n\\)*\\$\\(FlowFixMe\\|ExpectError\\)
+
+[strict]
+
+[version]
+0.125.1
+

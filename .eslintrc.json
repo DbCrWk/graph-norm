@@ -6,5 +6,19 @@
     "extends": [
         "airbnb-base",
         "plugin:flowtype/recommended"
-    ]
+    ],
+    "rules": {
+        "indent": [
+            "error",
+            4
+        ],
+        "arrow-parens": [
+            "warn",
+            "as-needed",
+            {
+                "requireForBlockBody": false
+            }
+        ],
+        "flowtype/no-primitive-constructor-types": 2
+    }
 }

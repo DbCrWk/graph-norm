@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "babel-node index.js",
-    "flow": "flow"
+    "flow": "flow",
+    "flow-typed-install": "flow-typed install --libdefDir ./tool/flow-typed",
+    "flow-typed-stub": "flow-typed create-stub --libdefDir ./tool/flow-def"
   },
   "repository": {
     "type": "git",
@@ -34,6 +36,8 @@
     "eslint-plugin-flowtype": "5.1.0",
     "eslint-plugin-import": "2.20.2",
     "flow-bin": "0.125.1",
+    "flow-typed": "3.1.0",
+    "jsnetworkx": "0.3.4",
     "prettier-eslint": "9.0.1"
   }
 }

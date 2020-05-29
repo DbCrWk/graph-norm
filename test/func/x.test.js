@@ -27,4 +27,7 @@ describe('x (graph multiplication)', () => {
         expect(o.vertices.c.outbound.has('c')).toBe(true);
         expect(o.vertices.c.inbound.has('c')).toBe(true);
     });
+
+    it.todo('includes paths of length 2');
+    it.todo('excludes paths greater than length 2');
 });

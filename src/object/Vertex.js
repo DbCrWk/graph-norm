@@ -23,6 +23,10 @@ class Vertex {
 
         return true;
     }
+
+    dominates(y: Vertex): boolean {
+        return doesSet(this.inbound).dominate(y.inbound);
+    }
 }
 
 export default Vertex;

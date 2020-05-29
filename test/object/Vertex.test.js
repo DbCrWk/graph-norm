@@ -64,4 +64,47 @@ describe('vertex', () => {
             expect(expected).toBe(actual);
         });
     });
+
+    describe('.dominates', () => {
+        it('returns true for a vertex with the same inbound edges', () => {
+            expect.assertions(1);
+            const a = new Vertex('a');
+            const b = new Vertex('b');
+
+            a.inbound.add(b.label);
+            b.inbound.add(b.label);
+
+            const expected = true;
+            const actual = a.dominates(b);
+
+            expect(expected).toBe(actual);
+        });
+
+        it('returns true for a vertex with dominating inbound edges', () => {
+            expect.assertions(1);
+            const a = new Vertex('a');
+            const b = new Vertex('b');
+
+            a.inbound.add(b.label);
+
+            const expected = true;
+            const actual = a.dominates(b);
+
+            expect(expected).toBe(actual);
+        });
+
+        it('returns false for a vertex with different inbound edges', () => {
+            expect.assertions(1);
+            const a = new Vertex('a');
+            const b = new Vertex('b');
+
+            a.inbound.add(a.label);
+            b.inbound.add(b.label);
+
+            const expected = false;
+            const actual = a.dominates(b);
+
+            expect(expected).toBe(actual);
+        });
+    });
 });

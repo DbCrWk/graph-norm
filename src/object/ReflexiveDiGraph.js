@@ -28,6 +28,19 @@ class ReflexiveDiGraph {
         this.vertices[vertexA.label].outbound.add(vertexB.label);
         this.vertices[vertexB.label].inbound.add(vertexA.label);
     }
+
+    isSameAs(h: ReflexiveDiGraph): boolean {
+        const gVertexLabels = Object.keys(this.vertices);
+        const hVertexLabels = Object.keys(h.vertices);
+
+        if (gVertexLabels.length !== hVertexLabels.length) return false;
+        const isGVertexSameAsH = gVertexLabels.map(
+            u => (u in h.vertices) && (h.vertices[u].isSameAs(this.vertices[u])),
+        );
+        const areAllVerticesTheSame = isGVertexSameAsH.reduce((p, c) => p && c);
+
+        return areAllVerticesTheSame;
+    }
 }
 
 export default ReflexiveDiGraph;

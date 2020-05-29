@@ -14,22 +14,32 @@ class ReflexiveDiGraph {
         this.transitiveFront = this;
     }
 
+    hasVertex(vertex: Vertex): boolean {
+        return (vertex.label in this.vertices);
+    }
+
     addVertex(vertex: Vertex) {
-        const { label } = vertex;
+        if (this.hasVertex(vertex)) return;
 
-        const newVertex = new Vertex(label);
-        newVertex.outbound.add(label);
-        newVertex.inbound.add(label);
+        this.copyInsertIntoVertexList(vertex);
+        this.addEdgeIntoVertexLists(vertex, vertex);
+    }
 
-        this.vertices[label] = newVertex;
+    hasEdge(vertexA: Vertex, vertexB: Vertex): boolean {
+        return (
+            this.hasVertex(vertexA)
+            && this.hasVertex(vertexB)
+            && (vertexB.label in this.vertices[vertexA.label].outbound)
+            && (vertexA.label in this.vertices[vertexB.label].inbound)
+        );
     }
 
     addEdge(vertexA: Vertex, vertexB: Vertex) {
-        if (!(vertexA.label in this.vertices)) this.addVertex(vertexA);
-        if (!(vertexB.label in this.vertices)) this.addVertex(vertexB);
+        if (this.hasEdge(vertexA, vertexB)) return;
 
-        this.vertices[vertexA.label].outbound.add(vertexB.label);
-        this.vertices[vertexB.label].inbound.add(vertexA.label);
+        this.addVertex(vertexA);
+        this.addVertex(vertexB);
+        this.addEdgeIntoVertexLists(vertexA, vertexB);
     }
 
     isSameAs(h: ReflexiveDiGraph): boolean {
@@ -43,6 +53,17 @@ class ReflexiveDiGraph {
         const areAllVerticesTheSame = isGVertexSameAsH.reduce((p, c) => p && c);
 
         return areAllVerticesTheSame;
+    }
+
+    addEdgeIntoVertexLists(vertexA: Vertex, vertexB: Vertex) {
+        this.vertices[vertexA.label].outbound.add(vertexB.label);
+        this.vertices[vertexB.label].inbound.add(vertexA.label);
+    }
+
+    copyInsertIntoVertexList(vertex: Vertex) {
+        const { label } = vertex;
+        const newVertex = new Vertex(label);
+        this.vertices[label] = newVertex;
     }
 }
 

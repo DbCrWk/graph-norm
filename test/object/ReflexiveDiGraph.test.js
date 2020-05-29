@@ -121,4 +121,80 @@ describe('reflexiveDiGraph', () => {
             expect(expected).toBe(actual);
         });
     });
+
+    describe('.transitiveFront', () => {
+        it('equals the original graph when transitive', () => {
+            expect.assertions(1);
+
+            const a = new Vertex('a');
+            const b = new Vertex('b');
+            const c = new Vertex('c');
+
+            const g = new ReflexiveDiGraph();
+            g.addEdge(a, b);
+            g.addEdge(a, c);
+            g.addEdge(b, c);
+
+            const t = g.transitiveFront;
+            const expected = true;
+            const actual = g.isSameAs(t);
+
+            expect(expected).toBe(actual);
+        });
+
+        it('does not equal the original graph when not transitive', () => {
+            expect.assertions(1);
+
+            const a = new Vertex('a');
+            const b = new Vertex('b');
+            const c = new Vertex('c');
+
+            const g = new ReflexiveDiGraph();
+            g.addEdge(a, b);
+            g.addEdge(b, c);
+
+            const t = g.transitiveFront;
+            const expected = false;
+            const actual = g.isSameAs(t);
+
+            expect(expected).toBe(actual);
+        });
+
+        it('equals exactly the non-leading edges', () => {
+            expect.assertions(1);
+
+            const a = new Vertex('a');
+            const b = new Vertex('b');
+            const c = new Vertex('c');
+
+            const g = new ReflexiveDiGraph();
+            g.addEdge(a, b);
+            g.addEdge(b, c);
+
+            const expectedT = new ReflexiveDiGraph();
+            expectedT.addEdge(a, b);
+            expectedT.addVertex(c);
+
+            const expected = true;
+            const actual = expectedT.isSameAs(g.transitiveFront);
+
+            expect(expected).toBe(actual);
+        });
+
+        it('is strictly dominated by the original graph when not transitive', () => {
+            expect.assertions(2);
+
+            const a = new Vertex('a');
+            const b = new Vertex('b');
+            const c = new Vertex('c');
+
+            const g = new ReflexiveDiGraph();
+            g.addEdge(a, b);
+            g.addEdge(b, c);
+            const t = g.transitiveFront;
+
+            expect(g.dominates(t)).toBe(true);
+            expect(g.isSameAs(t)).toBe(false);
+        });
+    });
 });

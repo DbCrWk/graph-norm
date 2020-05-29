@@ -16,6 +16,12 @@ class Vertex {
         this.outbound = new Set();
     }
 
+    copyFrom(y: Vertex) {
+        this.label = y.label;
+        this.inbound = new Set(y.inbound);
+        this.outbound = new Set(y.outbound);
+    }
+
     isSameAs(y: Vertex): boolean {
         if (this.label !== y.label) return false;
         if (!doesSet(this.inbound).equal(y.inbound)) return false;

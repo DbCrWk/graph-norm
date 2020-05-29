@@ -1,4 +1,6 @@
 // @flow
+import areSetsEqual from '../func/areSetsEqual';
+
 export type Label = string;
 
 class Vertex {
@@ -12,6 +14,14 @@ class Vertex {
         this.label = label.toString();
         this.inbound = new Set();
         this.outbound = new Set();
+    }
+
+    isSameAs(y: Vertex): boolean {
+        if (this.label !== y.label) return false;
+        if (!areSetsEqual(this.inbound, y.inbound)) return false;
+        if (!areSetsEqual(this.outbound, y.outbound)) return false;
+
+        return true;
     }
 }
 

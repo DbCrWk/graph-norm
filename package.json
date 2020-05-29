@@ -47,6 +47,7 @@
         "collectCoverageFrom": [
             "src/**/*.{js,jsx}"
         ],
+        "collectCoverage": true,
         "testEnvironment": "node"
     }
 }

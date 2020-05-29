@@ -7,8 +7,11 @@ class ReflexiveDiGraph {
     // maps to the right NodeLabel
     vertices: { [Label]: Vertex };
 
+    transitiveFront: ReflexiveDiGraph;
+
     constructor() {
         this.vertices = {};
+        this.transitiveFront = this;
     }
 
     addVertex(vertex: Vertex) {

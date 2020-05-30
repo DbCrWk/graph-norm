@@ -1,7 +1,6 @@
 // @flow
 import doesSet from '../func/doesSet';
-
-export type Label = string;
+import type { Label } from './Label';
 
 class Vertex {
     label: Label;

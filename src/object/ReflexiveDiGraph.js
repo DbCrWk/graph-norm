@@ -1,17 +1,20 @@
 // @flow
 import Vertex from './Vertex';
-import type { Label } from './Vertex';
+import type { Label } from './Label';
 
 class ReflexiveDiGraph {
     // TODO: this type could be made stronger to enforce that a NodeLabel always
     // maps to the right NodeLabel
+    label: Label;
+
     vertices: { [Label]: Vertex };
 
     transitiveFront: ReflexiveDiGraph;
 
-    constructor() {
+    constructor(label: Label = '') {
         this.vertices = {};
         this.transitiveFront = this;
+        this.label = label;
     }
 
     // //////////////////////////////
@@ -27,6 +30,7 @@ class ReflexiveDiGraph {
 
         this.copyInsertIntoVertexList(vertex);
         this.addEdgeIntoVertexLists(vertex, vertex);
+        this.transitiveFront.addVertex(vertex);
     }
 
     hasEdge(a: Vertex, b: Vertex): boolean {
@@ -41,6 +45,10 @@ class ReflexiveDiGraph {
     addEdge(a: Vertex, b: Vertex) {
         this.addEdgeForce(a, b);
         this.updateTransitiveFrontWithEdge(a, b);
+    }
+
+    isTransitive(): boolean {
+        return this.isSameAs(this.transitiveFront);
     }
 
     // ///////////////////////////////

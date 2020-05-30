@@ -1,7 +1,7 @@
 // @flow
 import ReflexiveDiGraph from '../object/ReflexiveDiGraph';
 import liftingReducer from './liftingReducer';
-import type { Label } from '../object/Vertex';
+import type { Label } from '../object/Label';
 
 function x(g: ReflexiveDiGraph, h: ReflexiveDiGraph): ReflexiveDiGraph {
     const o = new ReflexiveDiGraph();

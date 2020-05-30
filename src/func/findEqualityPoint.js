@@ -2,12 +2,12 @@
 import GraphSequence from '../object/GraphSequence';
 import ReflexiveDiGraph from '../object/ReflexiveDiGraph';
 
-function findEqualityPoint(s: GraphSequence): number | null {
-    const last = s.cumulantSequence[s.cumulantSequence.length - 1];
-
+function findEqualityPoint(s: GraphSequence, last: ReflexiveDiGraph): number {
     function findEqualityPointHelper(
-        q: Array<ReflexiveDiGraph>, baseSize: number, best: number | null,
-    ): number | null {
+        q: Array<ReflexiveDiGraph>, baseSize: number, best: number,
+    ): number {
+        if (q.length === 0) return Infinity;
+
         const m = Math.floor(q.length / 2);
         const gM = q[m];
         const isSame = gM.isSameAs(last);
@@ -21,8 +21,7 @@ function findEqualityPoint(s: GraphSequence): number | null {
         return findEqualityPointHelper(newQ, newBaseSize, newBest);
     }
 
-    const p = findEqualityPointHelper(s.cumulantSequence, 0, Infinity);
-    return (p === Infinity ? null : p);
+    return findEqualityPointHelper(s.cumulantSequence, 0, Infinity);
 }
 
 export default findEqualityPoint;

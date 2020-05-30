@@ -7,13 +7,17 @@ class GraphSequence {
 
     cumulantSequence: Array<ReflexiveDiGraph>;
 
+    length: number;
+
     constructor() {
         this.sequence = [];
         this.cumulantSequence = [];
+        this.length = 0;
     }
 
     push(g: ReflexiveDiGraph) {
         this.sequence.push(g);
+        this.length += 1;
 
         if (this.sequence.length === 1) {
             this.cumulantSequence.push(g);
@@ -27,14 +31,21 @@ class GraphSequence {
 
     split(p: number): Array<GraphSequence> {
         const head = new GraphSequence();
+        const point = new GraphSequence();
         const tail = new GraphSequence();
 
         this.sequence.forEach((g, i) => {
-            if (i < p) head.push(g);
+            if (i < p) { head.push(g); return; }
+            if (i === p) { point.push(g); return; }
             tail.push(g);
         });
 
-        return [head, tail];
+        return [head, point, tail];
+    }
+
+    isTransitive(): boolean {
+        const lastCumulant = this.cumulantSequence[this.cumulantSequence.length - 1];
+        return lastCumulant.isTransitive();
     }
 }
 

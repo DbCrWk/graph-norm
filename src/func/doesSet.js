@@ -1,6 +1,10 @@
 // @flow
 
-function doesSet<U>(a: Set<U>): { dominate: Set<U> => boolean, equal: Set<U> => boolean } {
+function doesSet<U>(a: Set<U>): {
+    dominate: Set<U> => boolean,
+    equal: Set<U> => boolean,
+    contain: U => boolean,
+} {
     function dominate(b: Set<U>): boolean {
         return Array.from(b).every(x => a.has(x));
     }
@@ -10,7 +14,11 @@ function doesSet<U>(a: Set<U>): { dominate: Set<U> => boolean, equal: Set<U> => 
         return dominate(b);
     }
 
-    return { dominate, equal };
+    function contain(bE: U): boolean {
+        return a.has(bE);
+    }
+
+    return { dominate, equal, contain };
 }
 
 export default doesSet;

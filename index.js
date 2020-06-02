@@ -3,8 +3,6 @@ import ParseNode from './src/object/ParseNode';
 import GraphSequence from './src/object/GraphSequence';
 import ReflexiveDiGraph from './src/object/ReflexiveDiGraph';
 import Vertex from './src/object/Vertex';
-import generateRenormalization from './src/func/generateRenormalization';
-import display from './src/util/display';
 import renderTree from './src/util/renderTree';
 
 

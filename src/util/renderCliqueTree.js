@@ -1,33 +1,29 @@
 // @flow
-import ParseNode from '../object/ParseNode';
+import CliqueNode from '../object/CliqueNode';
 import ReflexiveDiGraph from '../object/ReflexiveDiGraph';
 
-function formatEntry(p: ParseNode): string {
-    if (p.isSpecial) return '';
-
-    const { entry } = p;
-
-    if (entry instanceof ReflexiveDiGraph) {
-        return entry.label;
-    }
-
-    const initialMarker = entry.isTransitive() ? 'T' : 'N';
-    const { length } = entry.sequence;
-    const first = entry.sequence[0].label;
-    const last = entry.sequence[length - 1].label;
-
-    return `${initialMarker} [${length}] : (${first} ... ${last})`;
+function formatEntry(p: CliqueNode): string {
+    const { t, l } = p;
+    const { cliqueMap } = t;
+    if (p.t.parseNode.entry instanceof ReflexiveDiGraph) return '';
+    if (!(l in cliqueMap)) return '-';
+    const val = [...cliqueMap[l]];
+    return `${l}: ${val.join(', ')}`;
 }
 
 function renderTree(
-    p: ParseNode,
+    p: CliqueNode,
     { depth, pathMarks }: { depth: number, pathMarks: Array<boolean> } =
     { depth: 0, pathMarks: [] },
 ) {
-    const { isSpecial } = p;
+    const { isSpecial } = p.t.parseNode;
+
+    const renderableChildren = p.children.filter(
+        c => !(c.t.parseNode.entry instanceof ReflexiveDiGraph),
+    );
 
     const marker = isSpecial ? '*' : '■';
-    const continuationMarker = p.children.length === 0 ? ' ' : '│';
+    const continuationMarker = renderableChildren.length === 0 ? ' ' : '│';
     const renderPathMark = (pathMark: boolean): string => (pathMark ? '    ' : ' │  ');
     const renderLastMark = (pathMark: boolean): string => (pathMark ? ' └──' : ' ├──');
 
@@ -45,12 +41,12 @@ function renderTree(
     console.log(pathMarksCombinedBeforeMark, marker, rep);
     console.log(pathMarksCombined, continuationMarker);
 
-    const lastIndex = p.children.length - 1;
-    const boundRenderTree = (t: ParseNode, i: number) => {
+    const lastIndex = renderableChildren.length - 1;
+    const boundRenderTree = (t: CliqueNode, i: number) => {
         const last = i === lastIndex;
         renderTree(t, { depth: depth + 1, pathMarks: [...pathMarks, last] });
     };
-    p.children.forEach(boundRenderTree);
+    renderableChildren.forEach(boundRenderTree);
 }
 
 export default renderTree;

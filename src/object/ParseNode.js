@@ -65,9 +65,7 @@ class ParseNode {
             }
 
             this.children = [
-                new ParseNode(new GraphSequence()),
-                new ParseNode(renormalizationSequence[0]),
-                new ParseNode(new GraphSequence()),
+                new ParseNode(child),
             ];
             return;
         }

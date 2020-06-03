@@ -43,6 +43,17 @@ class Vertex {
         return doesSet(this.inbound).dominate(y.inbound);
     }
 
+    comparedTo(y: Vertex): number {
+        const thisAsNumber = parseInt(this.label, 10);
+        const yAsNumber = parseInt(y.label, 10);
+        if (
+            Number.isNaN(thisAsNumber)
+            || Number.isNaN(yAsNumber)
+        ) return (thisAsNumber < yAsNumber ? -1 : 1);
+
+        return thisAsNumber - yAsNumber;
+    }
+
     hasEdgeTo(y: Vertex): boolean {
         return doesSet(this.outbound).contain(y.label);
     }

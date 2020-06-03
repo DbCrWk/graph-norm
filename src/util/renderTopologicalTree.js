@@ -1,30 +1,19 @@
 // @flow
-import ParseNode from '../object/ParseNode';
+import TopologicalNode from '../object/TopologicalNode';
 import ReflexiveDiGraph from '../object/ReflexiveDiGraph';
 
-function formatEntry(p: ParseNode): string {
-    if (p.isSpecial) return '';
-
-    const { entry } = p;
-
-    if (entry instanceof ReflexiveDiGraph) {
-        return entry.label;
-    }
-
-    const initialMarker = entry.isTransitive() ? 'T' : 'N';
-    const { length } = entry.sequence;
-    const first = entry.sequence[0].label;
-    const last = entry.sequence[length - 1].label;
-
-    return `${initialMarker} [${length}] : (${first} ... ${last})`;
+function formatEntry(p: TopologicalNode): string {
+    const { cliqueMap, parentToSelfCliqueMap } = p;
+    if (p.parseNode.entry instanceof ReflexiveDiGraph) return '';
+    return `${JSON.stringify(Object.keys(cliqueMap))} ${JSON.stringify(parentToSelfCliqueMap)}`;
 }
 
 function renderTree(
-    p: ParseNode,
+    p: TopologicalNode,
     { depth, pathMarks }: { depth: number, pathMarks: Array<boolean> } =
     { depth: 0, pathMarks: [] },
 ) {
-    const { isSpecial } = p;
+    const { isSpecial } = p.parseNode;
 
     const marker = isSpecial ? '*' : '■';
     const continuationMarker = p.children.length === 0 ? ' ' : '│';
@@ -46,7 +35,7 @@ function renderTree(
     console.log(pathMarksCombined, continuationMarker);
 
     const lastIndex = p.children.length - 1;
-    const boundRenderTree = (t: ParseNode, i: number) => {
+    const boundRenderTree = (t: TopologicalNode, i: number) => {
         const last = i === lastIndex;
         renderTree(t, { depth: depth + 1, pathMarks: [...pathMarks, last] });
     };

@@ -49,7 +49,7 @@ class Vertex {
         if (
             Number.isNaN(thisAsNumber)
             || Number.isNaN(yAsNumber)
-        ) return (thisAsNumber < yAsNumber ? -1 : 1);
+        ) return (thisAsNumber < yAsNumber ? 1 : -1);
 
         return thisAsNumber - yAsNumber;
     }

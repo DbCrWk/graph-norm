@@ -38,7 +38,9 @@ function renderTree(
 
     const rep = formatEntry(p);
 
+    // eslint-disable-next-line no-console
     console.log(pathMarksCombinedBeforeMark, marker, rep);
+    // eslint-disable-next-line no-console
     console.log(pathMarksCombined, continuationMarker);
 
     const lastIndex = renderableChildren.length - 1;

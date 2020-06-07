@@ -1,14 +1,26 @@
 {
-    "name": "graph-norm",
+    "name": "grano",
     "version": "0.0.1",
-    "description": "Graph normalization",
-    "main": "index.js",
+    "description": "Graph renormalization",
+    "main": "./src/cli/grano.js",
+    "engines": {
+        "node": "12.16.3"
+    },
     "scripts": {
-        "test": "jest",
-        "start": "babel-node index.js",
-        "flow": "flow",
-        "flow-typed-install": "flow-typed install --libdefDir ./tool/flow-typed",
-        "flow-typed-stub": "flow-typed create-stub --libdefDir ./tool/flow-def"
+        "start": "babel-node ./src/cli/grano.js",
+        "build:src:clean": "rimraf build",
+        "build:src:babel": "babel src --out-dir build --verbose --copy-files",
+        "build:src": "npm run build:src:clean && npm run build:src:babel",
+        "build": "npm run build:src",
+        "postinstall": "npm run build",
+        "test:lint:src": "eslint 'src/**/*.js?(x)' --max-warnings=0",
+        "test:lint:test": "eslint 'test/**/*.js?(x)' --max-warnings=0",
+        "test:lint:all": "npm run test:lint:src && npm run test:lint:test",
+        "test:jest": "jest",
+        "test:flow": "flow",
+        "test": "npm run test:lint:all && npm run test:flow && npm run test:jest",
+        "util:flow-typed-install": "flow-typed install --libdefDir ./tool/flow-typed",
+        "util:flow-typed-stub": "flow-typed create-stub --libdefDir ./tool/flow-def"
     },
     "repository": {
         "type": "git",
@@ -19,6 +31,9 @@
         "email": "dev@dabke.com"
     },
     "license": "NONE",
+    "bin": {
+        "grano": "./build/cli/grano.js"
+    },
     "bugs": {
         "url": "https://github.com/DbCrWk/graph-norm/issues"
     },
@@ -30,8 +45,13 @@
         "@babel/polyfill": "7.8.7",
         "@babel/preset-env": "7.9.6",
         "@babel/preset-flow": "7.9.0",
+        "ajv": "6.12.2",
         "babel-eslint": "10.1.0",
         "babel-jest": "26.0.1",
+        "better-ajv-errors": "0.6.7",
+        "chalk": "4.0.0",
+        "clear": "0.1.0",
+        "clui": "0.3.6",
         "eslint": "7.0.0",
         "eslint-config-airbnb-base": "14.1.0",
         "eslint-plugin-flowtype": "5.1.0",
@@ -39,9 +59,12 @@
         "eslint-plugin-jest": "23.13.2",
         "flow-bin": "0.125.1",
         "flow-typed": "3.1.0",
+        "husky": "4.2.5",
         "jest": "26.0.1",
         "jsnetworkx": "0.3.4",
-        "prettier-eslint": "9.0.1"
+        "prettier-eslint": "9.0.1",
+        "rimraf": "3.0.2",
+        "yargs": "15.3.1"
     },
     "jest": {
         "collectCoverageFrom": [
@@ -49,5 +72,10 @@
         ],
         "collectCoverage": true,
         "testEnvironment": "node"
+    },
+    "husky": {
+        "hooks": {
+            "pre-push": "npm test"
+        }
     }
 }

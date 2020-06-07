@@ -1,0 +1,19 @@
+{
+    "label": "some-string",
+    "$schema": "../schema/scaffold/1.0.0.json",
+    "version": "1.0.0",
+    "vertices": [],
+    "edges": [],
+    "graphs": {},
+    "sequence": [
+        {
+            "label": "g1",
+            "edges": [
+                [
+                    "a",
+                    "b"
+                ]
+            ]
+        }
+    ]
+}

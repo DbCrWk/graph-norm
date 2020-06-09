@@ -30,7 +30,7 @@
         "name": "Dev Dabke",
         "email": "dev@dabke.com"
     },
-    "license": "NONE",
+    "license": "GPLv3",
     "bin": {
         "grano": "./build/cli/grano.js"
     },

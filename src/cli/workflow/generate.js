@@ -59,10 +59,10 @@ function generate(
         ? Array.from(
             { length }, (x, i) => {
                 debug('Graph entry created', { index: i });
-                return ({ label: (i + 1).toString(), edges: generateEdgeSet() });
+                return ({ label: `g${(i + 1).toString()}`, edges: generateEdgeSet() });
             },
         )
-        : [{ label: '1', edges: base.edges }];
+        : [{ label: 'g1', edges: base.edges }];
     const graphs = {};
     graphList.forEach(g => {
         graphs[g.label] = g;

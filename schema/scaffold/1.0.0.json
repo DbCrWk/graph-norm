@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "https://github.com/DbCrWk/graph-norm/schema/scaffold/1.0.0.json",
+    "$id": "https://raw.githubusercontent.com/DbCrWk/graph-norm/development/schema/scaffold/1.0.0.json",
     "version": "1.0.0",
     "title": "Grano Scaffold",
     "description": "A grano scaffold file to describe a graph sequence",

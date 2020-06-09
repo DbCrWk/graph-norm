@@ -8,6 +8,7 @@
     },
     "scripts": {
         "start": "babel-node ./src/cli/grano.js",
+        "release": "dotenv release-it",
         "build:src:clean": "rimraf build",
         "build:src:babel": "babel src --out-dir build --verbose --copy-files",
         "build:src": "npm run build:src:clean && npm run build:src:babel",
@@ -45,10 +46,12 @@
         "@babel/polyfill": "7.8.7",
         "@babel/preset-env": "7.9.6",
         "@babel/preset-flow": "7.9.0",
+        "@release-it/keep-a-changelog": "1.0.1",
         "ajv": "6.12.2",
         "babel-eslint": "10.1.0",
         "babel-jest": "26.0.1",
         "better-ajv-errors": "0.6.7",
+        "dotenv-cli": "3.1.0",
         "eslint": "7.0.0",
         "eslint-config-airbnb-base": "14.1.0",
         "eslint-plugin-flowtype": "5.1.0",
@@ -61,6 +64,7 @@
         "jsnetworkx": "0.3.4",
         "pino": "6.3.2",
         "prettier-eslint": "9.0.1",
+        "release-it": "13.6.2",
         "rimraf": "3.0.2",
         "yargs": "15.3.1"
     },

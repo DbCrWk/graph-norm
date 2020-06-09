@@ -1,6 +1,7 @@
 // @flow
 import ParseNode from '../object/ParseNode';
 import ReflexiveDiGraph from '../object/ReflexiveDiGraph';
+import { raw } from './logger';
 
 function formatEntry(p: ParseNode): string {
     if (p.isSpecial) return '';
@@ -42,10 +43,8 @@ function renderTree(
 
     const rep = formatEntry(p);
 
-    // eslint-disable-next-line no-console
-    console.log(pathMarksCombinedBeforeMark, marker, rep);
-    // eslint-disable-next-line no-console
-    console.log(pathMarksCombined, continuationMarker);
+    raw(pathMarksCombinedBeforeMark, marker, rep);
+    raw(pathMarksCombined, continuationMarker);
 
     const lastIndex = p.children.length - 1;
     const boundRenderTree = (t: ParseNode, i: number) => {

@@ -1,4 +1,5 @@
 // @flow
+import { raw } from './logger';
 import TopologicalNode from '../object/TopologicalNode';
 import ReflexiveDiGraph from '../object/ReflexiveDiGraph';
 
@@ -31,10 +32,8 @@ function renderTree(
 
     const rep = formatEntry(p);
 
-    // eslint-disable-next-line no-console
-    console.log(pathMarksCombinedBeforeMark, marker, rep);
-    // eslint-disable-next-line no-console
-    console.log(pathMarksCombined, continuationMarker);
+    raw(pathMarksCombinedBeforeMark, marker, rep);
+    raw(pathMarksCombined, continuationMarker);
 
     const lastIndex = p.children.length - 1;
     const boundRenderTree = (t: TopologicalNode, i: number) => {

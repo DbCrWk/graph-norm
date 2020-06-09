@@ -3,6 +3,7 @@
         "Renormalized",
         "cumulant",
         "grano",
-        "jsnetworkx"
+        "jsnetworkx",
+        "pino"
     ]
 }

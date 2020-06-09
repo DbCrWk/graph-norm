@@ -1,10 +1,10 @@
 // @flow
 import { inspect } from 'util';
+import { raw } from './logger';
 
 function display(o: any): string {
     const formattedO = inspect(o, { colors: true });
-    // eslint-disable-next-line no-console
-    console.log(formattedO);
+    raw(formattedO);
     return formattedO;
 }
 

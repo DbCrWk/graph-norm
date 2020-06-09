@@ -49,9 +49,6 @@
         "babel-eslint": "10.1.0",
         "babel-jest": "26.0.1",
         "better-ajv-errors": "0.6.7",
-        "chalk": "4.0.0",
-        "clear": "0.1.0",
-        "clui": "0.3.6",
         "eslint": "7.0.0",
         "eslint-config-airbnb-base": "14.1.0",
         "eslint-plugin-flowtype": "5.1.0",
@@ -62,6 +59,7 @@
         "husky": "4.2.5",
         "jest": "26.0.1",
         "jsnetworkx": "0.3.4",
+        "pino": "6.3.2",
         "prettier-eslint": "9.0.1",
         "rimraf": "3.0.2",
         "yargs": "15.3.1"

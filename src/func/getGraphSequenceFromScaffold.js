@@ -1,54 +1,16 @@
 // @flow
-import fs from 'fs';
-import path from 'path';
-import Ajv from 'ajv';
-import betterAjvErrors from 'better-ajv-errors';
-// import chalk from 'chalk';
-import { Spinner } from 'clui';
-
+import type { Schema as ScaffoldSchema } from '../../schema/scaffold/1.0.0.type';
 import Vertex from '../object/Vertex';
 import ReflexiveDiGraph from '../object/ReflexiveDiGraph';
 import GraphSequence from '../object/GraphSequence';
-import ParseNode from '../object/ParseNode';
-import renderTree from '../util/renderTree';
 
-const ajv = new Ajv({
-    allErrors: true,
-    verbose: true,
-    async: false,
-    jsonPointers: true,
-});
-
-// TODO: we should eventually actually detect the schema
-const schemaPath = path.join(__dirname, '..', '..', 'schema', 'scaffold', '1.0.0.json');
-const schema = JSON.parse(fs.readFileSync(schemaPath).toString());
-const validate = ajv.compile(schema);
-
-function parseScaffold({ scaffold }: { scaffold: {} }): boolean {
-    /* eslint-disable no-console */
-    const status = new Spinner('Parsing');
-    status.start();
-
-    // $FlowFixMe
-    const valid: boolean = validate(scaffold);
-    if (!valid) {
-        console.error('not valid!');
-        const output = betterAjvErrors(schema, scaffold, validate.errors, { indent: 2 });
-        console.log(output);
-        status.stop();
-        return false;
-    }
-
-    console.log('valid!');
-
+function getGraphSequenceFromScaffold(scaffold: ScaffoldSchema): GraphSequence {
     // What we need to:
     // First pass: construct master vertex set
     // Second pass: we already have master edge set
     // Third pass: construct master graph set
     // Fourth pass: construct sequence
-
     const {
-        // $FlowFixMe
         vertices, edges, graphs, sequence,
     } = scaffold;
 
@@ -77,6 +39,8 @@ function parseScaffold({ scaffold }: { scaffold: {} }): boolean {
         });
     }
     sequence.forEach(g => {
+        if (typeof g === 'string') return;
+
         const eForG = g.edges;
         const vForG = g.vertices;
 
@@ -119,6 +83,7 @@ function parseScaffold({ scaffold }: { scaffold: {} }): boolean {
         });
     }
     sequence.forEach(g => {
+        if (typeof g === 'string') return;
         const { label } = g;
         const eForG = g.edges;
 
@@ -141,16 +106,11 @@ function parseScaffold({ scaffold }: { scaffold: {} }): boolean {
     // Final pass
     const trueSequence = new GraphSequence();
     sequence.forEach(g => {
-        const { label } = g;
+        const label = (typeof g === 'string') ? g : g.label;
         trueSequence.push(allGraphs[label]);
     });
 
-
-    const p = new ParseNode(trueSequence);
-    renderTree(p);
-
-    status.stop();
-    return valid;
+    return trueSequence;
 }
 
-export default parseScaffold;
+export default getGraphSequenceFromScaffold;

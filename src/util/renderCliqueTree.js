@@ -1,4 +1,5 @@
 // @flow
+import { raw } from './logger';
 import CliqueNode from '../object/CliqueNode';
 import ReflexiveDiGraph from '../object/ReflexiveDiGraph';
 
@@ -38,10 +39,8 @@ function renderTree(
 
     const rep = formatEntry(p);
 
-    // eslint-disable-next-line no-console
-    console.log(pathMarksCombinedBeforeMark, marker, rep);
-    // eslint-disable-next-line no-console
-    console.log(pathMarksCombined, continuationMarker);
+    raw(pathMarksCombinedBeforeMark, marker, rep);
+    raw(pathMarksCombined, continuationMarker);
 
     const lastIndex = renderableChildren.length - 1;
     const boundRenderTree = (t: CliqueNode, i: number) => {

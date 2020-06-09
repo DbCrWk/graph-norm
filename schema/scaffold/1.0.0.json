@@ -43,7 +43,6 @@
                     "$ref": "#/definitions/graph"
                 }
             },
-            "additionalProperties": false,
             "uniqueItems": true
         },
         "sequence": {
@@ -59,7 +58,7 @@
                     }
                 ]
             },
-            "uniqueItems": true
+            "uniqueItems": false
         }
     },
     "definitions": {

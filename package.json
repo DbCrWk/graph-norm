@@ -1,6 +1,6 @@
 {
     "name": "grano",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Graph renormalization",
     "main": "./src/cli/grano.js",
     "engines": {

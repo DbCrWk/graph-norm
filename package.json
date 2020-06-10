@@ -7,7 +7,9 @@
         "node": "12.16.3"
     },
     "scripts": {
-        "start": "babel-node ./src/cli/grano.js",
+        "start": "echo \"Error: Select start:build or start:src\" && exit 1",
+        "start:build": "node --max-old-space-size=8192 ./build/cli/grano.js",
+        "start:src": "babel-node --max-old-space-size=8192 ./src/cli/grano.js",
         "release": "dotenv release-it",
         "build:src:clean": "rimraf build",
         "build:src:babel": "babel src --out-dir build --verbose --copy-files",
@@ -21,7 +23,8 @@
         "test:flow": "flow",
         "test": "npm run test:lint:all && npm run test:flow && npm run test:jest",
         "util:flow-typed-install": "flow-typed install --libdefDir ./tool/flow-typed",
-        "util:flow-typed-stub": "flow-typed create-stub --libdefDir ./tool/flow-def"
+        "util:flow-typed-stub": "flow-typed create-stub --libdefDir ./tool/flow-def",
+        "util:log-pretty": "pino-pretty --colorize --translateTime --ignore pid,hostname"
     },
     "repository": {
         "type": "git",
@@ -62,6 +65,7 @@
         "husky": "4.2.5",
         "jest": "26.0.1",
         "pino": "6.3.2",
+        "pino-pretty": "4.0.0",
         "prettier-eslint": "9.0.1",
         "release-it": "13.6.2",
         "rimraf": "3.0.2",

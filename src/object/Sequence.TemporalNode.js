@@ -1,5 +1,6 @@
 // @flow
 import GraphSequence from './GraphSequence';
+import { debugLib as debugGn, errorLib as errorGn } from '../util/logger';
 import generateRenormalization from '../func/generateRenormalization';
 import ReflexiveDiGraph from './ReflexiveDiGraph';
 
@@ -11,6 +12,10 @@ import GraphTemporalNode from './Graph.TemporalNode';
 /* eslint-enable import/no-cycle */
 
 import type { NodeSequence } from '../../schema/temporal.tree/1.0.0.type';
+
+const namespace = 'Object > Sequence.TemporalNode';
+const debug = debugGn(namespace);
+const error = errorGn(namespace);
 
 class SequenceTemporalNode extends TemporalNode {
     isTransitive: boolean;
@@ -28,9 +33,15 @@ class SequenceTemporalNode extends TemporalNode {
         super(label);
         this.isTransitive = sequence.isTransitive();
 
+        debug('.constructor', 'Sequence assigned', { label, length: sequence.length, isTransitive: this.isTransitive });
+
         // Transitive case
+        debug('.constructor', 'Generating renormalization', { label });
         const renormalizationSequence = generateRenormalization(sequence);
+        debug('.constructor', 'Renormalization generated', { label });
+
         if (this.isTransitive) {
+            debug('.constructor', 'Sequence is transitive; performing simple map of children', { label });
             this.children = renormalizationSequence.map(
                 c => (
                     (c instanceof GraphSequence)
@@ -38,14 +49,18 @@ class SequenceTemporalNode extends TemporalNode {
                         : new GraphTemporalNode(c)
                 ),
             );
+            debug('.constructor', 'Sequence children mapped', { label });
             return;
         }
 
+
         // Intransitive case
+        debug('.constructor', 'Sequence is intransitive; performing curated map of children', { label });
         if (renormalizationSequence.length === 1) {
+            debug('.constructor', 'One child detected', { label });
             const child = renormalizationSequence[0];
             if (!(child instanceof ReflexiveDiGraph)) {
-                throw new TypeError('Sequence.TemporalNode [intransitive]: Sole child of renormalization sequence is not a graph');
+                throw error('.constructor: intransitive', 'Sole child of renormalization sequence is not a graph', { label });
             }
 
             this.children = [
@@ -55,11 +70,13 @@ class SequenceTemporalNode extends TemporalNode {
         }
 
         if (renormalizationSequence.length === 2) {
+            debug('.constructor', 'Two children detected', { label });
             const [first, second] = renormalizationSequence;
             if (
                 (first instanceof ReflexiveDiGraph)
                 && (second instanceof GraphSequence)
             ) {
+                debug('.constructor', 'Graph first; (special) sequence second', { label });
                 const child = first;
                 const tail = second;
                 this.children = [
@@ -73,6 +90,7 @@ class SequenceTemporalNode extends TemporalNode {
                 (first instanceof GraphSequence)
                 && (second instanceof ReflexiveDiGraph)
             ) {
+                debug('.constructor', 'Sequence first; graph second', { label });
                 const head = first;
                 const child = second;
                 this.children = [
@@ -83,21 +101,22 @@ class SequenceTemporalNode extends TemporalNode {
             }
 
             if (first instanceof GraphSequence) {
-                throw new TypeError('Sequence.TemporalNode [intransitive]: Both children are sequences');
+                throw error('.constructor: intransitive', 'Both children are sequences', { label });
             }
-            throw new TypeError('Sequence.TemporalNode [intransitive]: Both children are graphs');
+            throw error('.constructor: intransitive', 'Both children are graphs', { label });
         }
 
         if (renormalizationSequence.length === 3) {
+            debug('.constructor', 'Three (max) children detected: sequence, graph, (special) sequence', { label });
             const [head, child, tail] = renormalizationSequence;
             if (!(head instanceof GraphSequence)) {
-                throw new TypeError('Sequence.TemporalNode [intransitive]: Child 1 of 3 of renormalization sequence is not a sequence');
+                throw error('.constructor: intransitive', 'Child 1 of 3 of renormalization sequence is not a sequence', { label });
             }
             if (!(child instanceof ReflexiveDiGraph)) {
-                throw new TypeError('Sequence.TemporalNode [intransitive]: Child 2 of 3 of renormalization sequence is not a graph');
+                throw error('.constructor: intransitive', 'Child 2 of 3 of renormalization sequence is not a graph', { label });
             }
             if (!(tail instanceof GraphSequence)) {
-                throw new TypeError('Sequence.TemporalNode [intransitive]: Child 3 of 3 of renormalization sequence is not a sequence');
+                throw error('.constructor: intransitive', 'Child 3 of 3 of renormalization sequence is not a sequence', { label });
             }
 
             this.children = [
@@ -108,7 +127,7 @@ class SequenceTemporalNode extends TemporalNode {
             return;
         }
 
-        throw new TypeError('ParseNode [.processIntransitiveEntry]: Intransitive entry has too many elements in renormalization sequence');
+        throw error('.constructor: intransitive', 'Intransitive entry has too many elements in renormalization sequence', { label });
     }
 
     toNode(): NodeSequence {

@@ -6,6 +6,9 @@ import type { Schema as ScaffoldSchema } from '../../../schema/scaffold/1.0.0.ty
 
 const debug = debugGn('Workflow > Generate');
 
+const convertNumCharToSub = (char: string) => String.fromCharCode(char.charCodeAt(0) - 48 + 8320);
+const convertNumStringToSub = (str: string) => [...str].map(convertNumCharToSub).join('');
+
 function generate(
     {
         strategy, numVertex, probEdge, length,
@@ -61,7 +64,9 @@ function generate(
         ? Array.from(
             { length }, (x, i) => {
                 debug('Graph entry created', { index: i });
-                return ({ label: `g${(i + 1).toString()}`, edges: generateEdgeSet() });
+                const rawIndexAsString = (i + 1).toString();
+                const indexCastSubscript = convertNumStringToSub(rawIndexAsString);
+                return ({ label: `g${indexCastSubscript}`, edges: generateEdgeSet() });
             },
         )
         : [{ label: 'g1', edges: base.edges }];

@@ -28,10 +28,27 @@ class ReflexiveDiGraph {
         return (vp.label in this.vertices);
     }
 
+    hasVertexByLabel(vl: Label): boolean {
+        return (vl in this.vertices);
+    }
+
     addVertex(vp: Vertex): Vertex {
         if (this.hasVertex(vp)) return this.vertices[vp.label];
 
         const vertex = this.copyInsertIntoVertexList(vp);
+        this.addEdgeForce(vertex, vertex);
+        this.addPathForce(vertex, vertex);
+
+        this.transitiveFront.addVertex(vertex);
+        this.transitiveClosure.addVertex(vertex);
+
+        return vertex;
+    }
+
+    addVertexByLabel(vl: Label): Vertex {
+        if (this.hasVertexByLabel(vl)) return this.vertices[vl];
+
+        const vertex = this.insertLabelIntoVertexList(vl);
         this.addEdgeForce(vertex, vertex);
         this.addPathForce(vertex, vertex);
 
@@ -58,6 +75,29 @@ class ReflexiveDiGraph {
         this.addPath(a, b);
 
         this.updateTransitiveFrontWithEdge(a, b);
+    }
+
+    addEdgeSetByMap(
+        edgeSetMap: { [Label]: Array<Label> },
+        { dangerouslyAssumeTfIsVerified }: { dangerouslyAssumeTfIsVerified: boolean }
+        = { dangerouslyAssumeTfIsVerified: false },
+    ) {
+        const fromVertices = Object.keys(edgeSetMap);
+        fromVertices.forEach(ul => {
+            const u = this.addVertexByLabel(ul);
+            const toVertices: Array<Label> = edgeSetMap[ul];
+            toVertices.forEach(vl => {
+                const v = this.addVertexByLabel(vl);
+                this.addEdgeForce(u, v);
+            });
+        });
+
+        if (
+            !dangerouslyAssumeTfIsVerified
+            || this !== this.transitiveFront
+        ) this.bulkUpdateTransitiveFront();
+        // XXX: we really need to address this
+        // this.bulkUpdateTransitiveClosure();
     }
 
     hasPath(ap: Vertex, bp: Vertex) {
@@ -89,11 +129,15 @@ class ReflexiveDiGraph {
     }
 
     isTransitive(): boolean {
-        return this.isSameAs(this.transitiveFront);
+        const isSameAsTf = this.isSameAs(this.transitiveFront);
+        if (isSameAsTf) this.transitiveFront = this;
+        return isSameAsTf;
     }
 
     isClosed(): boolean {
-        return this.isSameAs(this.transitiveClosure);
+        const isSameAsTc = this.isSameAs(this.transitiveClosure);
+        if (isSameAsTc) this.transitiveClosure = this;
+        return isSameAsTc;
     }
 
     // ///////////////////////////////
@@ -173,6 +217,38 @@ class ReflexiveDiGraph {
         });
     }
 
+    bulkUpdateTransitiveFront() {
+        const edgeSetMap = {};
+        let isTfDifferentFromThis = false;
+
+        const vertexKeys: Array<Label> = Object.keys(this.vertices);
+        vertexKeys.forEach(uk => {
+            const outbound = [...this.vertices[uk].outbound];
+            // Exploit the fact that an edge in the transitive front has to also
+            // be an edge in the graph
+            const outboundInTf: Array<Label> = outbound.filter(
+                vk => this.vertices[vk].dominates(this.vertices[uk]),
+            );
+
+            if (
+                !isTfDifferentFromThis
+                || outbound.length !== outboundInTf.length
+            ) isTfDifferentFromThis = true;
+
+            edgeSetMap[uk] = outboundInTf;
+        });
+
+        if (isTfDifferentFromThis) {
+            if (this === this.transitiveFront) {
+                this.transitiveFront = new ReflexiveDiGraph(`tf(${this.label})`);
+            }
+            this.transitiveFront.addEdgeSetByMap(
+                edgeSetMap,
+                { dangerouslyAssumeTfIsVerified: true },
+            );
+        }
+    }
+
     updateTransitiveClosureWithPath(a: Vertex, b: Vertex) {
         b.inboundPath.forEach(l => {
             const z = this.vertices[l];
@@ -248,6 +324,13 @@ class ReflexiveDiGraph {
         const { label } = vertex;
         const newVertex = new Vertex(label);
         this.vertices[label] = newVertex;
+
+        return newVertex;
+    }
+
+    insertLabelIntoVertexList(vertexLabel: Label): Vertex {
+        const newVertex = new Vertex(vertexLabel);
+        this.vertices[vertexLabel] = newVertex;
 
         return newVertex;
     }

@@ -1,0 +1,150 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://raw.githubusercontent.com/DbCrWk/graph-norm/development/schema/temporal.tree/1.0.0.json",
+    "version": "1.0.0",
+    "title": "Grano Temporal Tree",
+    "description": "A grano file to describe a temporal tree",
+    "type": "object",
+    "properties": {
+        "label": {
+            "description": "An identifiable text identifier for this tree",
+            "type": "string"
+        },
+        "version": {
+            "description": "The version that the temporal.tree should be checked against",
+            "type": "string",
+            "enum": [
+                "1.0.0"
+            ]
+        },
+        "root": {
+            "$ref": "#/definitions/node_sequence"
+        },
+        "$schema": {
+            "type": "string",
+            "enum": [
+                "https://raw.githubusercontent.com/DbCrWk/graph-norm/development/schema/temporal.tree/1.0.0.json"
+            ]
+        }
+    },
+    "definitions": {
+        "node_label": {
+            "description": "Text that uniquely identifies a node",
+            "type": "string"
+        },
+        "node": {
+            "description": "A single node of the tree",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/node_special"
+                },
+                {
+                    "$ref": "#/definitions/node_sequence"
+                },
+                {
+                    "$ref": "#/definitions/node_graph"
+                }
+            ]
+        },
+        "node_special": {
+            "description": "A special node of the tree",
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string",
+                    "enum": ["special"]
+                },
+                "label": { "$ref": "#/definitions/node_label" },
+                "children": {
+                    "description": "The set of children for a special node",
+                    "type": "array",
+                    "items": [
+                        {
+                            "$ref": "#/definitions/node_sequence"
+                        }
+                    ],
+                    "minItems": 1,
+                    "maxItems": 1,
+                    "uniqueItems": true,
+                    "additionalItems": false
+                }
+            },
+            "required": [
+                "category",
+                "label",
+                "children"
+            ]
+        },
+        "node_sequence": {
+            "description": "A node representing a sequence",
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string",
+                    "enum": [
+                        "sequence"
+                    ]
+                },
+                "label": { "$ref": "#/definitions/node_label" },
+                "children": {
+                    "description": "The set of children for a sequence node",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/node"
+                    },
+                    "minItems": 0,
+                    "uniqueItems": false
+                },
+                "isTransitive": {
+                    "description": "True iff this sequence transitivizes; false otherwise",
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "category",
+                "label",
+                "children"
+            ]
+        },
+        "node_graph": {
+            "description": "A node representing a specific graph",
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string",
+                    "enum": [
+                        "graph"
+                    ]
+                },
+                "label": {
+                    "$ref": "#/definitions/node_label"
+                },
+                "children": {
+                    "description": "The (empty) set of children for a graph node",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/node"
+                    },
+                    "minItems": 0,
+                    "maxItems": 0,
+                    "uniqueItems": true,
+                    "additionalItems": false
+                },
+                "isTransitive": {
+                    "description": "True iff this graph is transitive; false otherwise",
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "category",
+                "label"
+            ]
+        }
+    },
+    "required": [
+        "label",
+        "version",
+        "root"
+    ],
+    "additionalProperties": false
+}

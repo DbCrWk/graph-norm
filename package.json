@@ -61,7 +61,6 @@
         "flow-typed": "3.1.0",
         "husky": "4.2.5",
         "jest": "26.0.1",
-        "jsnetworkx": "0.3.4",
         "pino": "6.3.2",
         "prettier-eslint": "9.0.1",
         "release-it": "13.6.2",

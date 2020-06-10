@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "test:lint:all",
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"label": "npm: test:lint:all",
+			"detail": "npm run test:lint:src && npm run test:lint:test"
+		}
+	]
+}

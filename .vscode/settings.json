@@ -4,6 +4,7 @@
         "cumulant",
         "grano",
         "jsnetworkx",
-        "pino"
+        "pino",
+        "transitivizes"
     ]
 }

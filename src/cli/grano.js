@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 // @flow
-import fs from 'fs';
 import yargs from 'yargs';
 
-import { cli } from '../util/logger';
 import parse from './workflow/parse';
 import generate from './workflow/generate';
+import render from './workflow/render';
 
 function grano() {
     // NOTE: this is just how you have to use yargs
@@ -14,29 +13,44 @@ function grano() {
         .scriptName('grano')
         .usage('$0 <cmd> [args]')
         .command(
-            'parse <scaffold>',
+            'parse [args]',
             'Output a parse tree for a scaffold file',
             builder => {
                 builder
-                    .positional('scaffold', {
+                    .boolean('b')
+                    .alias('b', 'pretty')
+                    .describe('b', 'If set, output will be pretty-printed')
+                    .option('f', {
+                        alias: 'scaffold-file',
+                        demandOption: false,
                         type: 'string',
-                        describe: 'the scaffold file',
-                    })
-                    .coerce('scaffold', arg => JSON.parse(fs.readFileSync(arg).toString()))
-                    .fail((msg, e) => {
-                        cli.error(e);
-                        cli.error('Scaffold file is not valid (either not found or not valid JSON)');
-                        cli.error(msg);
-                        process.exit(1);
+                        describe: 'If set, the scaffold file to read',
                     });
             },
             parse,
+        )
+        .command(
+            'render [args]',
+            'Output a parse tree for a temporal tree file',
+            builder => {
+                builder
+                    .option('f', {
+                        alias: 'temporal-tree-file',
+                        demandOption: false,
+                        type: 'string',
+                        describe: 'If set, the temporal tree file to read',
+                    });
+            },
+            render,
         )
         .command(
             'generate [args]',
             'Generate a scaffold file for a sample experiment',
             builder => {
                 builder
+                    .boolean('b')
+                    .alias('b', 'pretty')
+                    .describe('b', 'If set, output will be pretty-printed')
                     .option('n', {
                         alias: 'num-vertex',
                         demandOption: true,
@@ -67,6 +81,7 @@ function grano() {
             },
             generate,
         )
+        .completion()
         .demandCommand()
         .strict()
         .version()

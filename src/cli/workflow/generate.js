@@ -1,5 +1,5 @@
 // @flow
-import { raw, debug as debugGn } from '../../util/logger';
+import { raw, json, debug as debugGn } from '../../util/logger';
 import liftingReducer from '../../func/liftingReducer';
 
 import type { Schema as ScaffoldSchema } from '../../../schema/scaffold/1.0.0.type';
@@ -9,11 +9,13 @@ const debug = debugGn('Workflow > Generate');
 function generate(
     {
         strategy, numVertex, probEdge, length,
+        pretty,
     }: {
         strategy: 'new' | 'constant',
         numVertex: number,
         probEdge: number,
         length: number,
+        pretty?: boolean,
     },
 ): ScaffoldSchema {
     debug('Starting generation', {
@@ -92,7 +94,7 @@ function generate(
     };
 
     debug('Printing scaffold');
-    raw(JSON.stringify(scaffold, null, 4));
+    raw(json({ pretty })(scaffold));
 
     return scaffold;
 }

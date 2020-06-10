@@ -1,17 +1,23 @@
 // @flow
+import util from 'util';
 import fs from 'fs';
 import path from 'path';
 import Ajv from 'ajv';
 import betterAjvErrors from 'better-ajv-errors';
 
-import { raw, cli, debug as debugGn } from '../../util/logger';
+import {
+    json, raw, cli, debug as debugGn, error as errorGn,
+} from '../../util/logger';
+import readStdInToString from '../../util/readStdInToString';
 import getGraphSequenceFromScaffold from '../../func/getGraphSequenceFromScaffold';
-import ParseNode from '../../object/ParseNode';
-import renderTree from '../../util/renderTree';
+import SequenceTemporalNode from '../../object/Sequence.TemporalNode';
+import getTemporalTreeFromNode from '../../util/getTemporalTreeFromNode';
 
 import type { Schema as ScaffoldSchema } from '../../../schema/scaffold/1.0.0.type';
 
-const debug = debugGn('Workflow > Parse');
+const namespace = 'Workflow > Parse';
+const debug = debugGn(namespace);
+const error = errorGn(namespace);
 
 const ajv = new Ajv({
     allErrors: true,
@@ -25,21 +31,53 @@ const schemaPath = path.join(__dirname, '..', '..', '..', 'schema', 'scaffold', 
 const schema = JSON.parse(fs.readFileSync(schemaPath).toString());
 const validate = ajv.compile(schema);
 
-function parse({ scaffold }: { scaffold: {} }): boolean {
-    debug('Starting parse');
+async function parse(
+    { scaffoldFile, pretty }: { scaffoldFile?: string, pretty?: boolean },
+): Promise<boolean> {
+    if (!scaffoldFile) {
+        debug('No scaffold passed; using stdin');
+        if (process.stdin.isTTY) {
+            throw error('No input detected on stdin; please either pipe input or provide a scaffold file');
+        }
+    } else {
+        debug('Scaffold file set', { scaffoldFile });
+    }
+
+    debug('Reading scaffold file');
+    let scaffoldRaw;
+    try {
+        scaffoldRaw = scaffoldFile
+            ? (await util.promisify(fs.readFile)(scaffoldFile)).toString()
+            : await readStdInToString();
+    } catch (e) {
+        cli.error(e);
+        throw error('Scaffold file could not be read');
+    }
+    debug('Scaffold file read');
+
+    debug('Converting scaffold file to proper scaffold JSON object');
+    let scaffold;
+    try {
+        scaffold = JSON.parse(scaffoldRaw);
+    } catch (e) {
+        cli.error(e);
+        throw error('Scaffold file is not valid JSON');
+    }
+    debug('Scaffold file converted to proper scaffold JSON object');
+
+    debug('Analyzing scaffold');
     // $FlowFixMe
     const valid: boolean = validate(scaffold);
-    debug('Analysis of scaffold file complete');
+    debug('Analysis of scaffold complete');
 
     if (!valid) {
-        cli.error('Workflow > Parse: Scaffold file is not valid');
+        error('Scaffold is not valid');
         const output = betterAjvErrors(schema, scaffold, validate.errors, { indent: 2 });
         raw(output);
         return false;
     }
-    debug('Scaffold parse was successful');
+    debug('Analysis of scaffold was successful');
 
-    // $FlowFixMe
     const validScaffold: ScaffoldSchema = scaffold;
     const { label, version } = validScaffold;
     debug('Scaffold label and version detected', {
@@ -52,8 +90,9 @@ function parse({ scaffold }: { scaffold: {} }): boolean {
     debug('Graph sequence generated from graph sequence');
 
     debug('Generating parse tree from graph sequence');
-    const p = new ParseNode(sequence);
-    renderTree(p);
+    const p = new SequenceTemporalNode(sequence);
+    const tree = getTemporalTreeFromNode(p);
+    raw(json({ pretty })(tree));
     debug('Parse tree generated from graph sequence');
 
     return valid;

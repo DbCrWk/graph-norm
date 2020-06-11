@@ -12,13 +12,14 @@ const convertNumStringToSub = (str: string) => [...str].map(convertNumCharToSub)
 function generate(
     {
         strategy, numVertex, probEdge, length,
-        pretty,
+        pretty, subscript,
     }: {
         strategy: 'new' | 'constant',
         numVertex: number,
         probEdge: number,
         length: number,
         pretty?: boolean,
+        subscript?: boolean,
     },
 ): ScaffoldSchema {
     debug('Starting generation', {
@@ -65,7 +66,9 @@ function generate(
             { length }, (x, i) => {
                 debug('Graph entry created', { index: i });
                 const rawIndexAsString = (i + 1).toString();
-                const indexCastSubscript = convertNumStringToSub(rawIndexAsString);
+                const indexCastSubscript = subscript
+                    ? convertNumStringToSub(rawIndexAsString)
+                    : rawIndexAsString;
                 return ({ label: `g${indexCastSubscript}`, edges: generateEdgeSet() });
             },
         )

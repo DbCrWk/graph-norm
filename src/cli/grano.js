@@ -34,11 +34,21 @@ function grano() {
             'Output a parse tree for a temporal tree file',
             builder => {
                 builder
+                    .boolean('b')
+                    .alias('b', 'pretty')
+                    .describe('b', 'If set, output will be pretty-printed')
                     .option('f', {
                         alias: 'temporal-tree-file',
                         demandOption: false,
                         type: 'string',
                         describe: 'If set, the temporal tree file to read',
+                    })
+                    .option('s', {
+                        alias: 'style',
+                        demandOption: false,
+                        describe: 'The style in which to render; either terminal or d3',
+                        default: 'terminal',
+                        choices: ['terminal', 'd3'],
                     });
             },
             render,
@@ -51,6 +61,9 @@ function grano() {
                     .boolean('b')
                     .alias('b', 'pretty')
                     .describe('b', 'If set, output will be pretty-printed')
+                    .boolean('u')
+                    .alias('u', 'subscript')
+                    .describe('b', 'If set, graph indices will be labelled with unicode subscripts instead of numbers')
                     .option('n', {
                         alias: 'num-vertex',
                         demandOption: true,

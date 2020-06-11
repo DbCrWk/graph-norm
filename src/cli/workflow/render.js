@@ -6,10 +6,11 @@ import Ajv from 'ajv';
 import betterAjvErrors from 'better-ajv-errors';
 
 import {
-    raw, cli, debug as debugGn, error as errorGn,
+    raw, cli, debug as debugGn, error as errorGn, json,
 } from '../../util/logger';
 import readStdInToString from '../../util/readStdInToString';
 import temporalTreeRender from '../../render/temporalTree.render';
+import temporalTreeD3Render from '../../render/temporalTree.d3.render';
 
 import type { Schema as TemporalTreeSchema } from '../../../schema/temporal.tree/1.0.0.type';
 
@@ -29,7 +30,9 @@ const schemaPath = path.join(__dirname, '..', '..', '..', 'schema', 'temporal.tr
 const schema = JSON.parse(fs.readFileSync(schemaPath).toString());
 const validate = ajv.compile(schema);
 
-async function render({ temporalTreeFile }: { temporalTreeFile?: string }): Promise<boolean> {
+async function render(
+    { temporalTreeFile, style, pretty }: { temporalTreeFile?: string, style: 'terminal' | 'd3', pretty: boolean },
+): Promise<boolean> {
     if (!temporalTreeFile) {
         debug('No temporal tree passed; using stdin');
         if (process.stdin.isTTY) {
@@ -81,12 +84,16 @@ async function render({ temporalTreeFile }: { temporalTreeFile?: string }): Prom
         version,
     });
 
-    debug('Generating render of temporal tree');
-    const renderRaw = temporalTreeRender(root);
+    const styleToRender = {
+        terminal: r => temporalTreeRender(r).join('\n'),
+        d3: r => json({ pretty })(temporalTreeD3Render(r)),
+    };
+    debug('Generating render of temporal tree', { style });
+    const renderOutput = styleToRender[style](root);
     debug('Render generated successfully');
 
     debug('Starting display of render');
-    raw(renderRaw.join('\n'));
+    raw(renderOutput);
     debug('Display complete');
 
     return valid;

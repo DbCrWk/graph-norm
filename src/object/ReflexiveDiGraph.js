@@ -1,5 +1,6 @@
 // @flow
 import Vertex from './Vertex';
+import doesSet from '../func/doesSet';
 import type { Label } from './Label';
 
 class ReflexiveDiGraph {
@@ -62,8 +63,8 @@ class ReflexiveDiGraph {
         return (
             this.hasVertex(ap)
             && this.hasVertex(bp)
-            && (bp.label in this.vertices[ap.label].outbound)
-            && (ap.label in this.vertices[bp.label].inbound)
+            && (this.vertices[ap.label].outbound.has(bp.label))
+            && (this.vertices[bp.label].inbound.has(ap.label))
         );
     }
 
@@ -91,21 +92,21 @@ class ReflexiveDiGraph {
                 this.addEdgeForce(u, v);
             });
         });
+        this.bulkUpdatePaths();
 
         if (
             !dangerouslyAssumeTfIsVerified
             || this !== this.transitiveFront
         ) this.bulkUpdateTransitiveFront();
-        // XXX: we really need to address this
-        // this.bulkUpdateTransitiveClosure();
+        this.bulkUpdateTransitiveClosure();
     }
 
     hasPath(ap: Vertex, bp: Vertex) {
         return (
             this.hasVertex(ap)
             && this.hasVertex(bp)
-            && (bp.label in this.vertices[ap.label].outboundPath)
-            && (ap.label in this.vertices[bp.label].inboundPath)
+            && (this.vertices[ap.label].outboundPath.has(bp.label))
+            && (this.vertices[bp.label].inboundPath.has(ap.label))
         );
     }
 
@@ -259,7 +260,6 @@ class ReflexiveDiGraph {
                     this.transitiveClosure.copyFrom(this);
                 }
 
-                // XXX: correct this
                 this.transitiveClosure.addEdgeForce(z, b);
                 this.transitiveClosure.addPathForce(z, b);
             }
@@ -274,8 +274,82 @@ class ReflexiveDiGraph {
                     this.transitiveClosure.copyFrom(this);
                 }
 
-                this.transitiveClosure.addEdgeForce(z, b);
-                this.transitiveClosure.addPathForce(z, b);
+                this.transitiveClosure.addEdgeForce(a, z);
+                this.transitiveClosure.addPathForce(a, z);
+            }
+        });
+    }
+
+    bulkUpdatePaths() {
+        const vertexLabels = [...Object.keys(this.vertices)];
+        const uncheckedVertexSet: Set<Label> = new Set(vertexLabels);
+
+        const depthFirstHelper = (vl: Label): {
+            outboundPath: Set<Label>,
+            inboundPath: Set<Label>,
+        } => {
+            const hasLabelAlreadyBeenChecked = !uncheckedVertexSet.has(vl);
+            if (hasLabelAlreadyBeenChecked) {
+                const { inboundPath, outboundPath } = this.vertices[vl];
+                return { inboundPath, outboundPath };
+            }
+
+            uncheckedVertexSet.delete(vl);
+
+            const outboundLabels = [...this.vertices[vl].outbound];
+            const inboundLabels = [...this.vertices[vl].inbound];
+            const outboundPath = new Set();
+            const inboundPath = new Set();
+
+            const outboundPaths = outboundLabels.map(l => depthFirstHelper(l).outboundPath);
+            const inboundPaths = inboundLabels.map(l => depthFirstHelper(l).inboundPath);
+
+
+            outboundPaths.forEach(s => {
+                s.forEach(l => outboundPath.add(l));
+            });
+            inboundPaths.forEach(s => {
+                s.forEach(l => inboundPath.add(l));
+            });
+
+            this.vertices[vl].outboundPath = outboundPath;
+            this.vertices[vl].inboundPath = outboundPath;
+
+            return { outboundPath, inboundPath };
+        };
+
+        vertexLabels.forEach(depthFirstHelper);
+    }
+
+    bulkUpdateTransitiveClosure() {
+        const vertexLabels = [...Object.keys(this.vertices)];
+
+        vertexLabels.forEach(l => {
+            if (this.transitiveClosure === this) {
+                // We only need to check the outbound side because the inbound
+                // paths are a "convenience" in the sense that every inbound
+                // path is represented by a corresponding outbound path
+                const doesTcNeedUpdate = !doesSet(
+                    this.vertices[l].outboundPath,
+                ).equal(this.vertices[l].outbound);
+                if (doesTcNeedUpdate) {
+                    this.transitiveClosure = new ReflexiveDiGraph(`cl(${this.label})`);
+                    this.transitiveClosure.copyFrom(this);
+                }
+            }
+
+            const isStillEqual = this.transitiveClosure === this;
+            if (!isStillEqual) {
+                this.transitiveClosure.vertices[l].outbound = new Set(
+                    this.vertices[l].outboundPath,
+                );
+                this.transitiveClosure.vertices[l].inbound = new Set(
+                    this.vertices[l].inboundPath,
+                );
+                this.transitiveClosure.vertices[l].outboundPath = this
+                    .transitiveClosure.vertices[l].outbound;
+                this.transitiveClosure.vertices[l].inboundPath = this
+                    .transitiveClosure.vertices[l].inbound;
             }
         });
     }

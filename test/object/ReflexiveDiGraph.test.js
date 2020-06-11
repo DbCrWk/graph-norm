@@ -25,6 +25,45 @@ describe('reflexiveDiGraph', () => {
         it.todo('copies vertex instances instead of pointing to them');
     });
 
+    describe('.hasEdge', () => {
+        it('returns true if there is an edge', () => {
+            expect.assertions(4);
+
+            const g = new ReflexiveDiGraph();
+            const a = new Vertex('a');
+            const b = new Vertex('b');
+            const c = new Vertex('c');
+            g.addVertex(a);
+            g.addVertex(b);
+            g.addVertex(c);
+            g.addEdge(a, b);
+
+            expect(g.hasEdge(a, a)).toBe(true);
+            expect(g.hasEdge(b, b)).toBe(true);
+            expect(g.hasEdge(c, c)).toBe(true);
+            expect(g.hasEdge(a, b)).toBe(true);
+        });
+
+        it('returns false if there is no edge', () => {
+            expect.assertions(5);
+
+            const g = new ReflexiveDiGraph();
+            const a = new Vertex('a');
+            const b = new Vertex('b');
+            const c = new Vertex('c');
+            g.addVertex(a);
+            g.addVertex(b);
+            g.addVertex(c);
+            g.addEdge(a, b);
+
+            expect(g.hasEdge(a, c)).toBe(false);
+            expect(g.hasEdge(b, a)).toBe(false);
+            expect(g.hasEdge(b, c)).toBe(false);
+            expect(g.hasEdge(c, a)).toBe(false);
+            expect(g.hasEdge(c, b)).toBe(false);
+        });
+    });
+
     describe('.addEdge', () => {
         it('creates vertices if not present in edge creation', () => {
             expect.assertions(3);
@@ -49,6 +88,181 @@ describe('reflexiveDiGraph', () => {
 
             expect(g.vertices.a.outbound.has('b')).toBe(true);
             expect(g.vertices.b.inbound.has('a')).toBe(true);
+        });
+
+        it('correctly updates the transitive front if edge is transitive', () => {
+            expect.assertions(3);
+
+            const g = new ReflexiveDiGraph();
+            const a = new Vertex('a');
+            const b = new Vertex('b');
+            g.addVertex(a);
+            g.addVertex(b);
+            g.addEdge(a, b);
+
+            expect(g.vertices.a.outbound.has('b')).toBe(true);
+            expect(g.vertices.b.inbound.has('a')).toBe(true);
+
+            const h = g.transitiveFront;
+            expect(h).toBe(g);
+        });
+
+        it('correctly updates the transitive front if edges are not transitive', () => {
+            expect.assertions(9);
+
+            const g = new ReflexiveDiGraph();
+            const a = new Vertex('a');
+            const b = new Vertex('b');
+            const c = new Vertex('c');
+            g.addVertex(a);
+            g.addVertex(b);
+            g.addEdge(a, b);
+            g.addEdge(b, c);
+
+            expect(g.vertices.a.outbound.has('b')).toBe(true);
+            expect(g.vertices.b.inbound.has('a')).toBe(true);
+
+            expect(g.vertices.b.outbound.has('c')).toBe(true);
+            expect(g.vertices.c.inbound.has('b')).toBe(true);
+
+            const h = g.transitiveFront;
+            expect(h).not.toBe(g);
+
+            expect(h.vertices.a.outbound.has('b')).toBe(true);
+            expect(h.vertices.b.inbound.has('a')).toBe(true);
+
+            expect(h.vertices.b.outbound.has('c')).toBe(false);
+            expect(h.vertices.c.inbound.has('b')).toBe(false);
+        });
+
+        it('correctly updates the transitive closure if edge is transitive', () => {
+            expect.assertions(3);
+
+            const g = new ReflexiveDiGraph();
+            const a = new Vertex('a');
+            const b = new Vertex('b');
+            g.addVertex(a);
+            g.addVertex(b);
+            g.addEdge(a, b);
+
+            expect(g.vertices.a.outbound.has('b')).toBe(true);
+            expect(g.vertices.b.inbound.has('a')).toBe(true);
+
+            const h = g.transitiveClosure;
+            expect(h).toBe(g);
+        });
+
+        it('correctly updates the transitive closure if edges are not transitive', () => {
+            expect.assertions(11);
+
+            const g = new ReflexiveDiGraph();
+            const a = new Vertex('a');
+            const b = new Vertex('b');
+            const c = new Vertex('c');
+            g.addVertex(a);
+            g.addVertex(b);
+            g.addEdge(a, b);
+            g.addEdge(b, c);
+
+            expect(g.vertices.a.outbound.has('b')).toBe(true);
+            expect(g.vertices.b.inbound.has('a')).toBe(true);
+
+            expect(g.vertices.b.outbound.has('c')).toBe(true);
+            expect(g.vertices.c.inbound.has('b')).toBe(true);
+
+            const h = g.transitiveClosure;
+            expect(h).not.toBe(g);
+
+            expect(h.vertices.a.outbound.has('b')).toBe(true);
+            expect(h.vertices.b.inbound.has('a')).toBe(true);
+
+            expect(h.vertices.b.outbound.has('c')).toBe(true);
+            expect(h.vertices.c.inbound.has('b')).toBe(true);
+
+            expect(h.vertices.a.outbound.has('c')).toBe(true);
+            expect(h.vertices.c.inbound.has('a')).toBe(true);
+        });
+    });
+
+    describe('.addEdgeSetByMap', () => {
+        it.todo('correctly adds edges');
+        it('correctly updates paths', () => {
+            expect.assertions(3);
+
+            const g = new ReflexiveDiGraph('g');
+            g.addEdgeSetByMap({ a: ['b'], b: ['c'] });
+
+            expect([...g.vertices.a.outboundPath]).toStrictEqual(['a', 'b', 'c']);
+            expect([...g.vertices.b.outboundPath]).toStrictEqual(['b', 'c']);
+            expect([...g.vertices.c.outboundPath]).toStrictEqual(['c']);
+        });
+
+        it('correctly sets the transitive front', () => {
+            expect.assertions(4);
+
+            const g = new ReflexiveDiGraph('g');
+            g.addEdgeSetByMap({ a: ['b'], b: ['c'] });
+            const h = g.transitiveFront;
+
+            expect(h).not.toBe(g);
+            expect([...h.vertices.a.outbound]).toStrictEqual(['a', 'b']);
+            expect([...h.vertices.b.outbound]).toStrictEqual(['b']);
+            expect([...h.vertices.c.outbound]).toStrictEqual(['c']);
+        });
+
+        it('correctly sets the transitive closure', () => {
+            expect.assertions(4);
+
+            const g = new ReflexiveDiGraph('g');
+            g.addEdgeSetByMap({ a: ['b'], b: ['c'] });
+            const h = g.transitiveClosure;
+
+            expect(h).not.toBe(g);
+            expect([...h.vertices.a.outbound]).toStrictEqual(['a', 'b', 'c']);
+            expect([...h.vertices.b.outbound]).toStrictEqual(['b', 'c']);
+            expect([...h.vertices.c.outbound]).toStrictEqual(['c']);
+        });
+    });
+
+    describe('.hasPath', () => {
+        it('returns true if there is a path', () => {
+            expect.assertions(5);
+
+            const g = new ReflexiveDiGraph();
+            const a = new Vertex('a');
+            const b = new Vertex('b');
+            const c = new Vertex('c');
+            g.addVertex(a);
+            g.addVertex(b);
+            g.addVertex(c);
+            g.addEdge(a, b);
+            g.addEdge(b, c);
+
+            expect(g.hasPath(a, a)).toBe(true);
+            expect(g.hasPath(b, b)).toBe(true);
+            expect(g.hasPath(c, c)).toBe(true);
+
+            expect(g.hasPath(a, b)).toBe(true);
+            expect(g.hasPath(a, c)).toBe(true);
+        });
+
+        it('returns false if there is no path', () => {
+            expect.assertions(5);
+
+            const g = new ReflexiveDiGraph();
+            const a = new Vertex('a');
+            const b = new Vertex('b');
+            const c = new Vertex('c');
+            g.addVertex(a);
+            g.addVertex(b);
+            g.addVertex(c);
+            g.addEdge(a, b);
+
+            expect(g.hasPath(a, c)).toBe(false);
+            expect(g.hasPath(b, a)).toBe(false);
+            expect(g.hasPath(b, c)).toBe(false);
+            expect(g.hasPath(c, a)).toBe(false);
+            expect(g.hasPath(c, b)).toBe(false);
         });
     });
 

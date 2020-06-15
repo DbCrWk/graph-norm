@@ -15,8 +15,8 @@
         "label": "some-string",
         "version": "1.0.0",
         "root": {
-            "category": "sequence",
-            "label": "g1",
+            "category": "root",
+            "label": "root",
             "children": []
         }
     }

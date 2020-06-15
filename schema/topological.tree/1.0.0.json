@@ -89,7 +89,7 @@
                 },
                 "label": { "$ref": "#/definitions/node_label" },
                 "clique": {
-                    "$ref": "#/definitions/clique_ref"
+                    "$ref": "#/definitions/clique_rep"
                 },
                 "children": {
                     "description": "The set of children for a special node",
@@ -120,7 +120,7 @@
                 },
                 "label": { "$ref": "#/definitions/node_label" },
                 "clique": {
-                    "$ref": "#/definitions/clique_ref"
+                    "$ref": "#/definitions/clique_rep"
                 },
                 "children": {
                     "description": "The set of children for a sequence node",

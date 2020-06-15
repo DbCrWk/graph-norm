@@ -1,0 +1,40 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://raw.githubusercontent.com/DbCrWk/graph-norm/development/schema/parse.tree/1.0.0.json",
+    "version": "1.0.0",
+    "title": "Grano Parse Tree",
+    "description": "A grano file to describe a parse tree",
+    "type": "object",
+    "properties": {
+        "label": {
+            "description": "An identifiable text identifier for this tree",
+            "type": "string"
+        },
+        "version": {
+            "description": "The version that the parse.tree should be checked against",
+            "type": "string",
+            "enum": [
+                "1.0.0"
+            ]
+        },
+        "temporal": {
+            "$ref": "https://raw.githubusercontent.com/DbCrWk/graph-norm/development/schema/temporal.tree/1.0.0.json"
+        },
+        "topological": {
+            "$ref": "https://raw.githubusercontent.com/DbCrWk/graph-norm/development/schema/topological.tree/1.0.0.json"
+        },
+        "$schema": {
+            "type": "string",
+            "enum": [
+                "https://raw.githubusercontent.com/DbCrWk/graph-norm/development/schema/parse.tree/1.0.0.json"
+            ]
+        }
+    },
+    "required": [
+        "label",
+        "version",
+        "temporal",
+        "topological"
+    ],
+    "additionalProperties": false
+}

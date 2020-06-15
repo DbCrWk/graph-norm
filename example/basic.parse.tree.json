@@ -1,0 +1,23 @@
+{
+    "label": "some-string",
+    "$schema": "https://raw.githubusercontent.com/DbCrWk/graph-norm/development/schema/parse.tree/1.0.0.json",
+    "version": "1.0.0",
+    "temporal": {
+        "label": "some-string",
+        "version": "1.0.0",
+        "root": {
+            "category": "sequence",
+            "label": "g1",
+            "children": []
+        }
+    },
+    "topological": {
+        "label": "some-string",
+        "version": "1.0.0",
+        "root": {
+            "category": "sequence",
+            "label": "g1",
+            "children": []
+        }
+    }
+}

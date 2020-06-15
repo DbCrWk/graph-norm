@@ -1,0 +1,148 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://raw.githubusercontent.com/DbCrWk/graph-norm/development/schema/topological.tree/1.0.0.json",
+    "version": "1.0.0",
+    "title": "Grano Topological Tree",
+    "description": "A grano file to describe a topological tree",
+    "type": "object",
+    "properties": {
+        "label": {
+            "description": "An identifiable text identifier for this tree",
+            "type": "string"
+        },
+        "version": {
+            "description": "The version that the topological.tree should be checked against",
+            "type": "string",
+            "enum": [
+                "1.0.0"
+            ]
+        },
+        "root": {
+            "$ref": "#/definitions/root"
+        },
+        "$schema": {
+            "type": "string",
+            "enum": [
+                "https://raw.githubusercontent.com/DbCrWk/graph-norm/development/schema/topological.tree/1.0.0.json"
+            ]
+        }
+    },
+    "definitions": {
+        "node_label": {
+            "description": "Text that identifies the underlying graph, sequence, or special node; with clique_rep, this makes identification unique",
+            "type": "string"
+        },
+        "clique_rep": {
+            "description": "Text that identifies the label of the representative of this clique; with node_label, this make identification unique",
+            "type": "string"
+        },
+        "node": {
+            "description": "A single non-root node of the tree",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/node_special"
+                },
+                {
+                    "$ref": "#/definitions/node_sequence"
+                }
+            ]
+        },
+        "root": {
+            "description": "The root node of the tree",
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string",
+                    "enum": [
+                        "root"
+                    ]
+                },
+                "label": {
+                    "type": "string",
+                    "enum": [
+                        "root"
+                    ]
+                },
+                "children": {
+                    "description": "The set of children for a root node",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/node"
+                    },
+                    "minItems": 0,
+                    "uniqueItems": true
+                }
+            },
+            "required": [
+                "category",
+                "label",
+                "children"
+            ]
+        },
+        "node_special": {
+            "description": "A special node of the tree",
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string",
+                    "enum": ["special"]
+                },
+                "label": { "$ref": "#/definitions/node_label" },
+                "clique": {
+                    "$ref": "#/definitions/clique_ref"
+                },
+                "children": {
+                    "description": "The set of children for a special node",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/node_sequence"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                }
+            },
+            "required": [
+                "category",
+                "label",
+                "clique",
+                "children"
+            ]
+        },
+        "node_sequence": {
+            "description": "A node representing a sequence",
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string",
+                    "enum": [
+                        "sequence"
+                    ]
+                },
+                "label": { "$ref": "#/definitions/node_label" },
+                "clique": {
+                    "$ref": "#/definitions/clique_ref"
+                },
+                "children": {
+                    "description": "The set of children for a sequence node",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/node"
+                    },
+                    "minItems": 0,
+                    "uniqueItems": false
+                }
+            },
+            "required": [
+                "category",
+                "label",
+                "clique"
+            ]
+        }
+    },
+    "required": [
+        "label",
+        "version",
+        "root"
+    ],
+    "additionalProperties": false
+}

@@ -28,7 +28,8 @@
             {
                 "annotationStyle": "line"
             }
-        ]
+        ],
+        "jest/prefer-inline-snapshots": "off"
     },
     "env": {
         "jest": true

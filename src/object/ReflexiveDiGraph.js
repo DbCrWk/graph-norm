@@ -2,6 +2,7 @@
 import Vertex from './Vertex';
 import doesSet from '../func/doesSet';
 import type { Label } from './Label';
+import type { CliqueMap } from './CliqueMap';
 
 class ReflexiveDiGraph {
     // TODO: this type could be made stronger to enforce that a NodeLabel always
@@ -14,7 +15,7 @@ class ReflexiveDiGraph {
 
     transitiveClosure: ReflexiveDiGraph;
 
-    constructor(label: Label = '') {
+    constructor(label: Label) {
         this.vertices = {};
         this.transitiveFront = this;
         this.transitiveClosure = this;
@@ -139,6 +140,31 @@ class ReflexiveDiGraph {
         const isSameAsTc = this.isSameAs(this.transitiveClosure);
         if (isSameAsTc) this.transitiveClosure = this;
         return isSameAsTc;
+    }
+
+    getCliqueMap(): CliqueMap {
+        const { vertices } = this;
+        const vertexList: Array<Label> = Object.keys(vertices);
+
+        const cliqueMap: CliqueMap = {};
+        vertexList.forEach(l => {
+            const v = this.vertices[l];
+            const communicatingVertices: Array<Label> = [...v.outbound]
+                .filter((o: Label) => v.inbound.has(o));
+
+            // Should never be empty because v should communicate with itself
+            // Also, this contains all vertices in its communication class already
+            const isAlreadyCovered = communicatingVertices.some(o => (o in cliqueMap));
+            if (isAlreadyCovered) return;
+
+            const orderedCommunicatingVertices = communicatingVertices.sort(
+                (a: Label, b: Label) => vertices[a].comparedTo(vertices[b]),
+            );
+            const [first] = orderedCommunicatingVertices;
+            cliqueMap[first] = new Set(communicatingVertices);
+        });
+
+        return cliqueMap;
     }
 
     // ///////////////////////////////

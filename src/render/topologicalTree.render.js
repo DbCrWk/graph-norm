@@ -1,12 +1,12 @@
 // @flow
-import type { NodeGeneral } from '../../schema/temporal.tree/1.0.0.type';
+import type { Root, NodeGeneral } from '../../schema/topological.tree/1.0.0.type';
 import liftingReducer from '../func/liftingReducer';
 
 const renderPathMark = (pathMark: boolean): string => (pathMark ? '    ' : ' │  ');
 const renderLastMark = (pathMark: boolean): string => (pathMark ? ' └──' : ' ├──');
 
-function temporalTreeRender(
-    p: NodeGeneral,
+function topologicalTreeRender(
+    p: Root | NodeGeneral,
     { depth, pathMarks }: { depth: number, pathMarks: Array<boolean> } =
     { depth: 0, pathMarks: [] },
 ): Array<string> {
@@ -25,7 +25,7 @@ function temporalTreeRender(
     const pathMarksCombinedBeforeMark = pathMarksAsStringBeforeMark.join('');
 
     const lastIndex = children.length - 1;
-    const boundRenderTree = (t: NodeGeneral, i: number): Array<string> => temporalTreeRender(
+    const boundRenderTree = (t: NodeGeneral, i: number): Array<string> => topologicalTreeRender(
         t,
         { depth: depth + 1, pathMarks: [...pathMarks, i === lastIndex] },
     );
@@ -39,4 +39,4 @@ function temporalTreeRender(
     ];
 }
 
-export default temporalTreeRender;
+export default topologicalTreeRender;

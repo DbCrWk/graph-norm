@@ -22,7 +22,7 @@ function generateRenormalizationHelper(
 }
 
 function generateRenormalization(s: GraphSequence): RenormalizedSequence {
-    const last = s.cumulantSequence[s.cumulantSequence.length - 1];
+    const last = s.getLastCumulant();
     return generateRenormalizationHelper(s, last);
 }
 

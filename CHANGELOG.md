@@ -8,8 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+### Added
+ - `parse.tree` and `topological.tree` schemas
+ - `experiment` workflow
+
 ### Changed
- - Introduces `parse.tree` and `topological.tree` in consistent manner
  - Update workflows to return strings instead of directly printing them
 
 

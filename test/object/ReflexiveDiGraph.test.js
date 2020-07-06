@@ -7,7 +7,7 @@ describe('reflexiveDiGraph', () => {
         it('maintains self-loops', () => {
             expect.assertions(6);
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             g.addVertex(new Vertex('a'));
             g.addVertex(new Vertex('b'));
             g.addVertex(new Vertex('c'));
@@ -29,7 +29,7 @@ describe('reflexiveDiGraph', () => {
         it('returns true if there is an edge', () => {
             expect.assertions(4);
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             const a = new Vertex('a');
             const b = new Vertex('b');
             const c = new Vertex('c');
@@ -47,7 +47,7 @@ describe('reflexiveDiGraph', () => {
         it('returns false if there is no edge', () => {
             expect.assertions(5);
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             const a = new Vertex('a');
             const b = new Vertex('b');
             const c = new Vertex('c');
@@ -68,7 +68,7 @@ describe('reflexiveDiGraph', () => {
         it('creates vertices if not present in edge creation', () => {
             expect.assertions(3);
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             g.addEdge(new Vertex('a'), new Vertex('b'));
 
             expect('a' in g.vertices).toBe(true);
@@ -79,7 +79,7 @@ describe('reflexiveDiGraph', () => {
         it('creates an edge with existing vertices', () => {
             expect.assertions(2);
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             const a = new Vertex('a');
             const b = new Vertex('b');
             g.addVertex(a);
@@ -93,7 +93,7 @@ describe('reflexiveDiGraph', () => {
         it('correctly updates the transitive front if edge is transitive', () => {
             expect.assertions(3);
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             const a = new Vertex('a');
             const b = new Vertex('b');
             g.addVertex(a);
@@ -110,7 +110,7 @@ describe('reflexiveDiGraph', () => {
         it('correctly updates the transitive front if edges are not transitive', () => {
             expect.assertions(9);
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             const a = new Vertex('a');
             const b = new Vertex('b');
             const c = new Vertex('c');
@@ -138,7 +138,7 @@ describe('reflexiveDiGraph', () => {
         it('correctly updates the transitive closure if edge is transitive', () => {
             expect.assertions(3);
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             const a = new Vertex('a');
             const b = new Vertex('b');
             g.addVertex(a);
@@ -155,7 +155,7 @@ describe('reflexiveDiGraph', () => {
         it('correctly updates the transitive closure if edges are not transitive', () => {
             expect.assertions(11);
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             const a = new Vertex('a');
             const b = new Vertex('b');
             const c = new Vertex('c');
@@ -228,7 +228,7 @@ describe('reflexiveDiGraph', () => {
         it('returns true if there is a path', () => {
             expect.assertions(5);
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             const a = new Vertex('a');
             const b = new Vertex('b');
             const c = new Vertex('c');
@@ -249,7 +249,7 @@ describe('reflexiveDiGraph', () => {
         it('returns false if there is no path', () => {
             expect.assertions(5);
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             const a = new Vertex('a');
             const b = new Vertex('b');
             const c = new Vertex('c');
@@ -269,9 +269,9 @@ describe('reflexiveDiGraph', () => {
     describe('.isSameAs', () => {
         it('returns false for graphs with differently-sized vertex sets', () => {
             expect.assertions(1);
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             g.addVertex(new Vertex('a'));
-            const h = new ReflexiveDiGraph();
+            const h = new ReflexiveDiGraph('h');
             h.addVertex(new Vertex('a'));
             h.addVertex(new Vertex('b'));
 
@@ -283,9 +283,9 @@ describe('reflexiveDiGraph', () => {
 
         it('returns false for graphs with different vertices', () => {
             expect.assertions(1);
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             g.addVertex(new Vertex('a'));
-            const h = new ReflexiveDiGraph();
+            const h = new ReflexiveDiGraph('h');
             h.addVertex(new Vertex('b'));
 
             const expected = false;
@@ -300,12 +300,12 @@ describe('reflexiveDiGraph', () => {
             const a = new Vertex('a');
             const b = new Vertex('b');
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             g.addVertex(a);
             g.addVertex(b);
             g.addEdge(a, b);
 
-            const h = new ReflexiveDiGraph();
+            const h = new ReflexiveDiGraph('h');
             h.addVertex(a);
             h.addVertex(b);
 
@@ -321,12 +321,12 @@ describe('reflexiveDiGraph', () => {
             const a = new Vertex('a');
             const b = new Vertex('b');
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             g.addVertex(a);
             g.addVertex(b);
             g.addEdge(a, b);
 
-            const h = new ReflexiveDiGraph();
+            const h = new ReflexiveDiGraph('h');
             h.addEdge(a, b);
 
             const expected = true;
@@ -344,7 +344,7 @@ describe('reflexiveDiGraph', () => {
             const b = new Vertex('b');
             const c = new Vertex('c');
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             g.addEdge(a, b);
             g.addEdge(a, c);
             g.addEdge(b, c);
@@ -363,7 +363,7 @@ describe('reflexiveDiGraph', () => {
             const b = new Vertex('b');
             const c = new Vertex('c');
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             g.addEdge(a, b);
             g.addEdge(b, c);
 
@@ -381,11 +381,11 @@ describe('reflexiveDiGraph', () => {
             const b = new Vertex('b');
             const c = new Vertex('c');
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             g.addEdge(a, b);
             g.addEdge(b, c);
 
-            const expectedT = new ReflexiveDiGraph();
+            const expectedT = new ReflexiveDiGraph('t');
             expectedT.addEdge(a, b);
             expectedT.addVertex(c);
 
@@ -402,7 +402,7 @@ describe('reflexiveDiGraph', () => {
             const b = new Vertex('b');
             const c = new Vertex('c');
 
-            const g = new ReflexiveDiGraph();
+            const g = new ReflexiveDiGraph('g');
             g.addEdge(a, b);
             g.addEdge(b, c);
             const t = g.transitiveFront;

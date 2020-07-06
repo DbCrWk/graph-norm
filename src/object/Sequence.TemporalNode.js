@@ -20,7 +20,9 @@ const error = errorGn(namespace);
 class SequenceTemporalNode extends TemporalNode {
     isTransitive: boolean;
 
-    children: Array<TemporalNode>;
+    sequence: GraphSequence;
+
+    children: Array<SpecialTemporalNode | GraphTemporalNode | SequenceTemporalNode>;
 
     constructor(sequence: GraphSequence) {
         if (sequence.length === 0) {
@@ -29,8 +31,9 @@ class SequenceTemporalNode extends TemporalNode {
 
         const firstLabel = sequence.sequence[0].label;
         const lastLabel = sequence.sequence[sequence.length - 1].label;
-        const label = `${firstLabel} ... ${lastLabel}`;
+        const label = `(${firstLabel} ... ${lastLabel})`;
         super(label);
+        this.sequence = sequence;
         this.isTransitive = sequence.isTransitive();
 
         debug('.constructor', 'Sequence assigned', { label, length: sequence.length, isTransitive: this.isTransitive });
@@ -79,9 +82,10 @@ class SequenceTemporalNode extends TemporalNode {
                 debug('.constructor', 'Graph first; (special) sequence second', { label });
                 const child = first;
                 const tail = second;
+                const annotation = sequence.getLastCumulant().transitiveFront;
                 this.children = [
                     new GraphTemporalNode(child),
-                    new SpecialTemporalNode(tail),
+                    new SpecialTemporalNode(tail, annotation),
                 ];
                 return;
             }
@@ -118,11 +122,12 @@ class SequenceTemporalNode extends TemporalNode {
             if (!(tail instanceof GraphSequence)) {
                 throw error('.constructor: intransitive', 'Child 3 of 3 of renormalization sequence is not a sequence', { label });
             }
+            const annotation = sequence.getLastCumulant().transitiveFront;
 
             this.children = [
                 new SequenceTemporalNode(head),
                 new GraphTemporalNode(child),
-                new SpecialTemporalNode(tail),
+                new SpecialTemporalNode(tail, annotation),
             ];
             return;
         }

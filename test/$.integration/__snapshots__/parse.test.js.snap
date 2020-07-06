@@ -1,0 +1,98 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`parsing correctly produces the temporal and topological trees 1`] = `
+Object {
+  "category": "sequence",
+  "children": Array [
+    Object {
+      "category": "sequence",
+      "children": Array [
+        Object {
+          "category": "graph",
+          "isTransitive": false,
+          "label": "g",
+        },
+      ],
+      "isTransitive": false,
+      "label": "(g ... g)",
+    },
+    Object {
+      "category": "graph",
+      "isTransitive": true,
+      "label": "h",
+    },
+    Object {
+      "category": "sequence",
+      "children": Array [
+        Object {
+          "category": "graph",
+          "isTransitive": true,
+          "label": "h",
+        },
+        Object {
+          "category": "graph",
+          "isTransitive": true,
+          "label": "h",
+        },
+      ],
+      "isTransitive": true,
+      "label": "(h ... h)",
+    },
+  ],
+  "isTransitive": true,
+  "label": "(g ... h)",
+}
+`;
+
+exports[`parsing correctly produces the temporal and topological trees 2`] = `
+Object {
+  "category": "root",
+  "children": Array [
+    Object {
+      "category": "sequence",
+      "children": Array [
+        Object {
+          "category": "sequence",
+          "children": Array [],
+          "clique": "a",
+          "label": "(g ... g): a",
+        },
+        Object {
+          "category": "sequence",
+          "children": Array [],
+          "clique": "a",
+          "label": "(h ... h): a",
+        },
+      ],
+      "clique": "a",
+      "label": "(g ... h): a",
+    },
+    Object {
+      "category": "sequence",
+      "children": Array [
+        Object {
+          "category": "sequence",
+          "children": Array [],
+          "clique": "b",
+          "label": "(g ... g): b",
+        },
+        Object {
+          "category": "sequence",
+          "children": Array [],
+          "clique": "c",
+          "label": "(g ... g): c",
+        },
+        Object {
+          "category": "sequence",
+          "children": Array [],
+          "clique": "c",
+          "label": "(h ... h): c",
+        },
+      ],
+      "clique": "c",
+      "label": "(g ... h): c",
+    },
+  ],
+  "label": "root",
+}
+`;

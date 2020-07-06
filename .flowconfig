@@ -1,7 +1,12 @@
 [ignore]
 <PROJECT_ROOT>/node_modules/.*
+<PROJECT_ROOT>/example/.*
+<PROJECT_ROOT>/local/.*
 
 [include]
+<PROJECT_ROOT>/src/*
+<PROJECT_ROOT>/test/*
+<PROJECT_ROOT>/tool/*
 
 [libs]
 tool/flow-typed
@@ -11,10 +16,9 @@ tool/flow-def
 
 [options]
 include_warnings=true
-suppress_comment= \\(.\\|\n\\)*\\$\\(FlowFixMe\\|ExpectError\\)
 
 [strict]
 
 [version]
-0.125.1
+0.128.0
 

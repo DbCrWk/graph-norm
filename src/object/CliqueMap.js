@@ -1,4 +1,5 @@
 // @flow
-import type { Label } from './Label';
+import type { CliqueRep } from './CliqueRep';
+import type { Clique } from './Clique';
 
-export type CliqueMap = { [Label]: Set<Label> };
+export type CliqueMap = { [CliqueRep]: Clique };

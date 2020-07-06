@@ -5,6 +5,19 @@ import yargs from 'yargs';
 import parse from './workflow/parse';
 import generate from './workflow/generate';
 import render from './workflow/render';
+import experiment from './workflow/experiment';
+import { raw, debug as debugGn } from '../util/logger';
+
+const namespace = 'CLI';
+const debug = debugGn(namespace);
+
+const workflowBind = wf => async (...args) => {
+    debug('Starting workflow...', { args });
+    const ret = await wf(...args);
+    debug('Workflow complete; display output');
+    raw(ret);
+    debug('Workflow display complete');
+};
 
 function grano() {
     // NOTE: this is just how you have to use yargs
@@ -27,21 +40,21 @@ function grano() {
                         describe: 'If set, the scaffold file to read',
                     });
             },
-            parse,
+            workflowBind(parse),
         )
         .command(
             'render [args]',
-            'Output a parse tree for a temporal tree file',
+            'Output a pretty-print from a parse tree file',
             builder => {
                 builder
                     .boolean('b')
                     .alias('b', 'pretty')
                     .describe('b', 'If set, output will be pretty-printed')
                     .option('f', {
-                        alias: 'temporal-tree-file',
+                        alias: 'parse-tree-file',
                         demandOption: false,
                         type: 'string',
-                        describe: 'If set, the temporal tree file to read',
+                        describe: 'If set, the parse tree file to read',
                     })
                     .option('s', {
                         alias: 'style',
@@ -51,7 +64,7 @@ function grano() {
                         choices: ['terminal', 'd3'],
                     });
             },
-            render,
+            workflowBind(render),
         )
         .command(
             'generate [args]',
@@ -74,8 +87,8 @@ function grano() {
                     .option('s', {
                         alias: 'strategy',
                         demandOption: true,
-                        describe: 'The sequence generation mode; new -> each graph is different; constant -> each graph is the same',
-                        choices: ['new', 'constant'],
+                        describe: 'The sequence generation mode; new -> each graph is different; constant -> each graph is the same; pathological -> an LR bipartite graph with quadratic depth',
+                        choices: ['new', 'constant', 'pathological'],
                     })
                     .option('l', {
                         alias: 'length',
@@ -92,7 +105,68 @@ function grano() {
                         type: 'number',
                     });
             },
-            generate,
+            workflowBind(generate),
+        )
+        .command(
+            'experiment [args]',
+            'Run several experiments of sweeping through fill probabilities',
+            builder => {
+                builder
+                    .boolean('b')
+                    .alias('b', 'pretty')
+                    .describe('b', 'If set, output will be pretty-printed')
+                    .boolean('u')
+                    .alias('u', 'subscript')
+                    .describe('b', 'If set, graph indices will be labelled with unicode subscripts instead of numbers')
+                    .option('n', {
+                        alias: 'num-vertex',
+                        demandOption: true,
+                        default: 100,
+                        describe: 'The number of vertices in the sequence',
+                        type: 'number',
+                    })
+                    .option('l', {
+                        alias: 'length',
+                        demandOption: true,
+                        default: 100,
+                        describe: 'The length of the sequence',
+                        type: 'number',
+                    })
+                    .option('e', {
+                        alias: 'sweep-segment',
+                        demandOption: true,
+                        default: 10,
+                        describe: 'The number of balanced sub-intervals [0,1] should be broken into',
+                        type: 'number',
+                    })
+                    .option('r', {
+                        alias: 'sweep-resolution',
+                        demandOption: true,
+                        default: 3,
+                        describe: 'The number of balanced samples per sub interval',
+                        type: 'number',
+                    })
+                    .option('c', {
+                        alias: 'scale',
+                        demandOption: true,
+                        default: 'log',
+                        describe: 'The scale on which samples should be balanced: linear scale or log scale',
+                        choices: ['linear', 'log'],
+                    })
+                    .option('s', {
+                        alias: 'strategy',
+                        demandOption: true,
+                        describe: 'The sequence generation mode; new -> each graph is different; constant -> each graph is the same',
+                        choices: ['new', 'constant'],
+                    })
+                    .option('f', {
+                        alias: 'result-dir',
+                        demandOption: true,
+                        type: 'string',
+                        describe: 'The location where experiments should be stored',
+                    });
+            },
+            workflowBind(experiment),
         )
         .completion()
         .demandCommand()

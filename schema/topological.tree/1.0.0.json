@@ -97,7 +97,7 @@
                     "items": {
                         "$ref": "#/definitions/node_sequence"
                     },
-                    "minItems": 1,
+                    "minItems": 0,
                     "uniqueItems": true
                 }
             },

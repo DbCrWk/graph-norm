@@ -21,7 +21,7 @@
         "test:lint:all": "npm run test:lint:src && npm run test:lint:test",
         "test:jest": "jest",
         "test:flow": "flow",
-        "test": "npm run test:lint:all && npm run test:flow && npm run test:jest",
+        "test": "npm run test:lint:all && npm run test:flow -- --max-warnings 0 && npm run test:jest",
         "util:flow-typed-install": "flow-typed install --libdefDir ./tool/flow-typed",
         "util:flow-typed-stub": "flow-typed create-stub --libdefDir ./tool/flow-def",
         "util:log-pretty": "pino-pretty --colorize --translateTime --ignore pid,hostname"
@@ -60,7 +60,7 @@
         "eslint-plugin-flowtype": "5.1.0",
         "eslint-plugin-import": "2.20.2",
         "eslint-plugin-jest": "23.13.2",
-        "flow-bin": "0.125.1",
+        "flow-bin": "0.128.0",
         "flow-typed": "3.1.0",
         "husky": "4.2.5",
         "jest": "26.0.1",

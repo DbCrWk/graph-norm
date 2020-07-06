@@ -18,6 +18,16 @@
             "runtimeArgs": [
                 "--nolazy"
             ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Toy > Depth",
+            "program": "${workspaceFolder}/depth.js",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
+            "runtimeArgs": [
+                "--nolazy"
+            ]
         }
     ]
 }

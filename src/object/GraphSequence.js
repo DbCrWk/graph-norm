@@ -2,8 +2,6 @@
 import ReflexiveDiGraph from './ReflexiveDiGraph';
 import x from '../func/x';
 import { debugLib as debugGn } from '../util/logger';
-import type { Label } from './Label';
-import type { CliqueMap } from './CliqueMap';
 
 const namespace = 'Object > GraphSequence';
 const debug = debugGn(namespace);
@@ -33,7 +31,7 @@ class GraphSequence {
             return;
         }
 
-        const previousGraph = this.cumulantSequence[this.cumulantSequence.length - 1];
+        const previousGraph = this.getLastCumulant();
         debug('.push', 'Previous graph found', { label: g.label, previousGraph: { label: previousGraph.label } });
 
         debug('.push', 'Generating product graph');
@@ -64,34 +62,12 @@ class GraphSequence {
     }
 
     isTransitive(): boolean {
-        const lastCumulant = this.cumulantSequence[this.cumulantSequence.length - 1];
+        const lastCumulant = this.getLastCumulant();
         return lastCumulant.isTransitive();
     }
 
-    getCliqueMap(): CliqueMap {
-        // NOTE: We can exploit the fact that cliques for a transitive graph are
-        // just the strongly connected components
-        const { transitiveClosure } = this.cumulantSequence[this.cumulantSequence.length - 1];
-        const { vertices } = transitiveClosure;
-        const vertexList: Array<Label> = Object.keys(vertices);
-
-        const cliqueMap: CliqueMap = {};
-        vertexList.forEach(l => {
-            const v = transitiveClosure.vertices[l];
-            const communicatingVertices: Array<Label> = [...v.outbound]
-                .sort((a: Label, b: Label) => vertices[a].comparedTo(vertices[b]))
-                .filter((o: Label) => v.inbound.has(o));
-
-            // Should never be empty because v should communicate with itself
-            // Also, this contains all vertices in its communication class already
-            const isAlreadyCovered = communicatingVertices.some(o => (o in cliqueMap));
-            if (isAlreadyCovered) return;
-
-            const [first] = communicatingVertices;
-            cliqueMap[first] = new Set(communicatingVertices);
-        });
-
-        return cliqueMap;
+    getLastCumulant(): ReflexiveDiGraph {
+        return this.cumulantSequence[this.cumulantSequence.length - 1];
     }
 }
 

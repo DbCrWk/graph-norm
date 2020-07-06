@@ -9,25 +9,34 @@ import SequenceTemporalNode from './Sequence.TemporalNode';
 /* eslint-enable import/no-cycle */
 
 import type { NodeSpecial } from '../../schema/temporal.tree/1.0.0.type';
+import ReflexiveDiGraph from './ReflexiveDiGraph';
 
 const namespace = 'Object > Special.TemporalNode';
 const debug = debugGn(namespace);
 const error = errorGn(namespace);
 
 class SpecialTemporalNode extends TemporalNode {
+    annotation: ReflexiveDiGraph;
+
+    sequence: GraphSequence;
+
     children: Array<SequenceTemporalNode>;
 
-    constructor(sequence: GraphSequence) {
+    constructor(sequence: GraphSequence, annotation: ReflexiveDiGraph) {
         if (sequence.length === 0) {
             throw error('.constructor', 'Sequence must have entries');
         }
 
         const firstLabel = sequence.sequence[0].label;
         const lastLabel = sequence.sequence[sequence.length - 1].label;
-        const label = `△ ${firstLabel} ... ${lastLabel}`;
+        const label = `(${firstLabel} ... ${lastLabel}) △ ${annotation.label}`;
         super(label);
 
         debug('.constructor', 'Sequence assigned', { label, length: sequence.length });
+
+        this.annotation = annotation;
+
+        this.sequence = sequence;
 
         this.children = [
             new SequenceTemporalNode(sequence),

@@ -7,12 +7,12 @@ describe('x (graph multiplication)', () => {
     it('correctly includes self-loops', () => {
         expect.assertions(6);
 
-        const g = new ReflexiveDiGraph();
+        const g = new ReflexiveDiGraph('g');
         g.addVertex(new Vertex('a'));
         g.addVertex(new Vertex('b'));
         g.addVertex(new Vertex('c'));
 
-        const h = new ReflexiveDiGraph();
+        const h = new ReflexiveDiGraph('h');
         h.addVertex(new Vertex('a'));
         h.addVertex(new Vertex('b'));
         h.addVertex(new Vertex('c'));

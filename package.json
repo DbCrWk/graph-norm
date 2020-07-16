@@ -2,14 +2,15 @@
     "name": "grano",
     "version": "0.0.4",
     "description": "Graph renormalization",
-    "main": "./src/cli/grano.js",
+    "main": "./build/electron/main.js",
     "engines": {
         "node": "12.16.3"
     },
     "scripts": {
-        "start": "echo \"Error: Select start:build or start:src\" && exit 1",
+        "start": "electron .",
         "start:build": "node --max-old-space-size=8192 ./build/cli/grano.js",
         "start:src": "babel-node --max-old-space-size=8192 ./src/cli/grano.js",
+        "start:viz:dev": "webpack-dev-server --mode development --config ./src/viz/webpack.config.js",
         "release": "dotenv release-it",
         "build:src:clean": "rimraf build",
         "build:src:babel": "babel src --out-dir build --verbose --copy-files",
@@ -53,8 +54,11 @@
         "ajv": "6.12.2",
         "babel-eslint": "10.1.0",
         "babel-jest": "26.0.1",
+        "babel-loader": "8.1.0",
         "better-ajv-errors": "0.6.7",
+        "d3": "5.16.0",
         "dotenv-cli": "3.1.0",
+        "electron": "9.1.0",
         "eslint": "7.0.0",
         "eslint-config-airbnb-base": "14.1.0",
         "eslint-plugin-flowtype": "5.1.0",
@@ -62,6 +66,7 @@
         "eslint-plugin-jest": "23.13.2",
         "flow-bin": "0.128.0",
         "flow-typed": "3.1.0",
+        "html-webpack-plugin": "4.3.0",
         "husky": "4.2.5",
         "jest": "26.0.1",
         "pino": "6.3.2",
@@ -69,6 +74,9 @@
         "prettier-eslint": "9.0.1",
         "release-it": "13.6.2",
         "rimraf": "3.0.2",
+        "webpack": "4.43.0",
+        "webpack-cli": "3.3.12",
+        "webpack-dev-server": "3.11.0",
         "yargs": "15.3.1"
     },
     "jest": {

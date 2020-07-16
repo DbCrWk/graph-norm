@@ -22,8 +22,23 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Toy > Depth",
-            "program": "${workspaceFolder}/depth.js",
+            "name": "CLI > Parse > Round",
+            "program": "${workspaceFolder}/src/cli/grano.js",
+            "args": [
+                "parse",
+                "-f",
+                "${workspaceFolder}/example/round.scaffold.json"
+            ],
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
+            "runtimeArgs": [
+                "--nolazy"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Toy > Index",
+            "program": "${workspaceFolder}/index.js",
             "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
             "runtimeArgs": [
                 "--nolazy"

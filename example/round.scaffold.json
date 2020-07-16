@@ -1,0 +1,34 @@
+{
+    "label": "round",
+    "$schema": "https://raw.githubusercontent.com/DbCrWk/graph-norm/development/schema/scaffold/1.0.0.json",
+    "version": "1.0.0",
+    "vertices": [
+        "a",
+        "b",
+        "c"
+    ],
+    "edges": [],
+    "graphs": {
+        "g1": {
+            "label": "g1",
+            "vertices": ["a", "b", "c"],
+            "edges": [["a", "b"]]
+        },
+        "g2": {
+            "label": "g2",
+            "vertices": ["a", "b", "c"],
+            "edges": [["b", "c"]]
+        },
+        "g3": {
+            "label": "g3",
+            "vertices": ["a", "b", "c"],
+            "edges": [["c", "a"]]
+        }
+    },
+    "sequence": [
+        "g1",
+        "g2",
+        "g3",
+        "g1"
+    ]
+}

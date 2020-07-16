@@ -1,0 +1,137 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://raw.githubusercontent.com/DbCrWk/graph-norm/development/schema/parse.tree/1.1.0.json",
+    "version": "1.1.0",
+    "title": "Grano Parse Tree",
+    "description": "A grano file to describe a parse tree",
+    "type": "object",
+    "properties": {
+        "label": {
+            "description": "An identifiable text identifier for this tree",
+            "type": "string"
+        },
+        "version": {
+            "description": "The version that the parse.tree should be checked against",
+            "type": "string",
+            "enum": [
+                "1.1.0"
+            ]
+        },
+        "vertices": {
+            "description": "A set of vertices to add to all entries of the graph sequence",
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/vertex"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+        },
+        "graphs": {
+            "description": "A set of graphs that can be easily referenced",
+            "type": "object",
+            "patternProperties": {
+                "^[A-Za-z-][A-Za-z0-9_-]*$": {
+                    "$ref": "#/definitions/graph"
+                }
+            },
+            "uniqueItems": true
+        },
+        "sequence": {
+            "description": "The graph sequence",
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "$ref": "#/definitions/graph_with_label"
+                    },
+                    {
+                        "$ref": "#/definitions/graph_label"
+                    }
+                ]
+            },
+            "uniqueItems": false
+        },
+        "temporal": {
+            "$ref": "https://raw.githubusercontent.com/DbCrWk/graph-norm/development/schema/temporal.tree/1.0.0.json"
+        },
+        "topological": {
+            "$ref": "https://raw.githubusercontent.com/DbCrWk/graph-norm/development/schema/topological.tree/1.0.0.json"
+        },
+        "$schema": {
+            "type": "string",
+            "enum": [
+                "https://raw.githubusercontent.com/DbCrWk/graph-norm/development/schema/parse.tree/1.1.0.json"
+            ]
+        }
+    },
+    "definitions": {
+        "vertex": {
+            "description": "A single vertex",
+            "type": [
+                "number",
+                "string"
+            ]
+        },
+        "edge": {
+            "description": "A single edge",
+            "type": "array",
+            "items": [
+                {
+                    "$ref": "#/definitions/vertex"
+                },
+                {
+                    "$ref": "#/definitions/vertex"
+                }
+            ],
+            "minItems": 2,
+            "maxItems": 2,
+            "additionalItems": false
+        },
+        "graph_label": {
+            "description": "A string identifier for a graph",
+            "type": "string"
+        },
+        "graph": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "$ref": "#/definitions/graph_label"
+                },
+                "edges": {
+                    "description": "A set of edges for a particular graph",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/edge"
+                    },
+                    "minItems": 0,
+                    "uniqueItems": true
+                },
+                "vertices": {
+                    "description": "A set of vertices for this graph",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vertex"
+                    },
+                    "minItems": 0,
+                    "uniqueItems": true
+                }
+            }
+        },
+        "graph_with_label": {
+            "$ref": "#/definitions/graph",
+            "required": [
+                "label"
+            ]
+        }
+    },
+    "required": [
+        "label",
+        "version",
+        "temporal",
+        "topological",
+        "vertices",
+        "graphs",
+        "sequence"
+    ],
+    "additionalProperties": false
+}

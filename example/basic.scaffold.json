@@ -2,7 +2,9 @@
     "label": "some-string",
     "$schema": "https://raw.githubusercontent.com/DbCrWk/graph-norm/development/schema/scaffold/1.0.0.json",
     "version": "1.0.0",
-    "vertices": [],
+    "vertices": [
+        "c"
+    ],
     "edges": [],
     "graphs": {},
     "sequence": [

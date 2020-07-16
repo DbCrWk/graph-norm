@@ -11,7 +11,9 @@ import mergeEdgeMap from '../util/mergeEdgeMap';
 const namespace = 'func > getGraphSequenceFromScaffold';
 const debug = debugGn(namespace);
 
-function getGraphSequenceFromScaffold(scaffold: ScaffoldSchema): GraphSequence {
+function getGraphSequenceFromScaffold(
+    scaffold: ScaffoldSchema,
+): { sequence: GraphSequence, vertices: Array<number | string> } {
     // What we need to:
     // First pass: construct master vertex set
     // Second pass: we already have master edge set
@@ -155,7 +157,7 @@ function getGraphSequenceFromScaffold(scaffold: ScaffoldSchema): GraphSequence {
     });
     debug('()', 'Final Pass: Done');
 
-    return trueSequence;
+    return { sequence: trueSequence, vertices: [...allVertices] };
 }
 
 export default getGraphSequenceFromScaffold;

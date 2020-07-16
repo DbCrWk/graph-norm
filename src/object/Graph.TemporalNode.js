@@ -15,9 +15,12 @@ const debug = debugGn(namespace);
 class GraphTemporalNode extends TemporalNode {
     isTransitive: boolean;
 
+    graph: ReflexiveDiGraph;
+
     constructor(graph: ReflexiveDiGraph) {
         const { label } = graph;
         super(label);
+        this.graph = graph;
         this.isTransitive = graph.isTransitive();
 
         debug('.constructor', 'Graph assigned', { label, isTransitive: this.isTransitive });

@@ -76,7 +76,7 @@ function grano() {
                     .describe('b', 'If set, output will be pretty-printed')
                     .boolean('u')
                     .alias('u', 'subscript')
-                    .describe('b', 'If set, graph indices will be labelled with unicode subscripts instead of numbers')
+                    .describe('u', 'If set, graph indices will be labelled with unicode subscripts instead of numbers')
                     .option('n', {
                         alias: 'num-vertex',
                         demandOption: true,

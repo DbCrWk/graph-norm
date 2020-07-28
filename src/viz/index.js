@@ -71,11 +71,20 @@ function renderGraph(graphName) {
         .attr('stroke-width', d => Math.sqrt(d.value));
 
     const node = svg.append('g')
-        .selectAll('circle')
+        .selectAll('g')
         .data(nodes)
-        .join('circle')
+        .join('g');
+
+    node.append('circle')
         .attr('r', 5)
-        .attr('fill', d => d3.interpolateRdBu(parseInt(d.id, 10) / (n - 1)));
+        .attr('fill', d => d3.interpolateViridis((parseInt(d.id, 10) / (n - 1)) * 0.8 + 0.2));
+
+    node.append('text')
+        .attr('text-anchor', 'middle')
+        .attr('y', 2)
+        .attr('font-size', '0.5em')
+        .attr('fill', 'black')
+        .text(d => d.id);
     // Actual links and nodes created
 
     // Start force-based simulation
@@ -93,8 +102,7 @@ function renderGraph(graphName) {
             .attr('y2', d => d.target.y);
 
         node
-            .attr('cx', d => d.x)
-            .attr('cy', d => d.y);
+            .attr('transform', d => `translate(${d.x}, ${d.y})`);
     });
     // Simulation setup done
 }
@@ -268,7 +276,7 @@ function renderTemporalTree() {
             .join('circle')
             .attr('r', 5)
             .attr('id', dd => `${nameToCode(d.data.label)}-topological-${dd.id}`)
-            .attr('fill', dd => d3.interpolateRdBu(parseInt(dd.id, 10) / (n - 1)));
+            .attr('fill', dd => d3.interpolateViridis((parseInt(dd.id, 10) / (n - 1)) * 0.8 + 0.2));
 
         const simulation = d3
             .forceSimulation(nodes)

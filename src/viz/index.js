@@ -77,12 +77,12 @@ function renderGraph(graphName) {
 
     node.append('circle')
         .attr('r', 5)
-        .attr('fill', d => d3.interpolateViridis((parseInt(d.id, 10) / (n - 1)) * 0.8 + 0.2));
+        .attr('fill', '#c2f8ff');
 
     node.append('text')
         .attr('text-anchor', 'middle')
         .attr('y', 2)
-        .attr('font-size', '0.5em')
+        .attr('font-size', '0.6em')
         .attr('fill', 'black')
         .text(d => d.id);
     // Actual links and nodes created
@@ -271,12 +271,21 @@ function renderTemporalTree() {
 
         const graphNode = svgNode.append('g')
             .attr('id', `${nameToCode(d.data.label)}-topological`)
-            .selectAll('circle')
+            .selectAll('g')
             .data(nodes)
-            .join('circle')
+            .join('g');
+
+        graphNode.append('circle')
             .attr('r', 5)
             .attr('id', dd => `${nameToCode(d.data.label)}-topological-${dd.id}`)
-            .attr('fill', dd => d3.interpolateViridis((parseInt(dd.id, 10) / (n - 1)) * 0.8 + 0.2));
+            .attr('fill', '#c2f8ff');
+
+        graphNode.append('text')
+            .attr('text-anchor', 'middle')
+            .attr('y', 2)
+            .attr('font-size', '0.8em')
+            .attr('fill', 'black')
+            .text(dd => dd.id);
 
         const simulation = d3
             .forceSimulation(nodes)
@@ -292,8 +301,7 @@ function renderTemporalTree() {
                 .attr('y2', dl => dl.target.y);
 
             graphNode
-                .attr('cx', dd => dd.x)
-                .attr('cy', dd => dd.y);
+                .attr('transform', dd => `translate(${dd.x}, ${dd.y})`);
         });
 
         // simulation.on('end', () => {

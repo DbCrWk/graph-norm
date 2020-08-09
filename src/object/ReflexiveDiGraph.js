@@ -149,8 +149,8 @@ class ReflexiveDiGraph {
         const cliqueMap: CliqueMap = {};
         vertexList.forEach(l => {
             const v = this.vertices[l];
-            const communicatingVertices: Array<Label> = [...v.outbound]
-                .filter((o: Label) => v.inbound.has(o));
+            const communicatingVertices: Array<Label> = [...v.outboundPath]
+                .filter((o: Label) => v.inboundPath.has(o));
 
             // Should never be empty because v should communicate with itself
             // Also, this contains all vertices in its communication class already

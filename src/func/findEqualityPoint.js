@@ -16,7 +16,7 @@ function findEqualityPoint(s: GraphSequence, last: ReflexiveDiGraph): number {
         if (!isSame && m === q.length - 1) return best;
 
         const newQ = isSame ? q.slice(0, m) : q.slice(m + 1, q.length);
-        const newBaseSize = isSame ? baseSize : baseSize + m;
+        const newBaseSize = isSame ? baseSize : baseSize + m + 1;
         const newBest = isSame ? baseSize + m /* should be less than best */ : best;
         return findEqualityPointHelper(newQ, newBaseSize, newBest);
     }

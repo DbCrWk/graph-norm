@@ -12,12 +12,13 @@
             "args": [
                 "parse",
                 "-f",
-                "${workspaceFolder}/example/basic.scaffold.json"
+                "${workspaceFolder}/scaffold.json"
             ],
             "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
             "runtimeArgs": [
                 "--nolazy"
-            ]
+            ],
+            "sourceMaps": true,
         },
         {
             "type": "node",

@@ -62,6 +62,7 @@ class TopologyNode {
             this.category = 'sequence';
             this.h = n.sequence.getLastCumulant().transitiveClosure;
             const clique: Clique = this.h.getCliqueMap()[this.v];
+
             this.children = n.children
                 .map((childTemporalNode): Array<TopologyNode> => {
                     if (childTemporalNode instanceof SequenceTemporalNode) {

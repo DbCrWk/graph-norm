@@ -123,6 +123,16 @@ root.each(d => {
 });
 const xDiff = xMax - xMin;
 
+let yMax = -Infinity;
+let yMin = Infinity;
+root.each(d => {
+    if (d.y > yMax) yMax = d.y;
+    if (d.y < yMin) yMin = d.y;
+});
+const yDiff = yMax - yMin;
+console.log('yMax', yMax);
+console.log('yMin', yMin);
+
 function renderTopologicalTreeHelper(parent) {
     const svg = d3
         .select('#root')
@@ -186,12 +196,13 @@ function renderTemporalTree() {
         .select('#root')
         .append('svg')
         .style('width', `${(xDiff + 2 * Margin) * Scale}px`)
-        .attr('viewBox', [0, 0, 1000 + 2 * Margin, xDiff + 2 * Margin]);
+        .style('height', `${(yDiff + 2 * Margin) * Scale}px`)
+        .attr('viewBox', [0, 0, yDiff + 2 * Margin, xDiff + 2 * Margin]);
 
     const nodeGroup = svg.append('g')
         .attr('font-family', 'sans-serif')
         .attr('font-size', 10)
-        .attr('transform', `translate(${Margin}, ${-xMin + Margin})`);
+        .attr('transform', `translate(${2.25 * Margin}, ${Margin})`);
 
     nodeGroup.append('g')
         .attr('fill', 'none')
@@ -201,9 +212,9 @@ function renderTemporalTree() {
         .selectAll('path')
         .data(root.links())
         .join('path')
-        .attr('d', d3.linkHorizontal()
-            .x(d => d.y)
-            .y(d => d.x));
+        .attr('d', d3.linkVertical()
+            .x(d => d.x)
+            .y(d => d.y));
 
     const node = nodeGroup.append('g')
         .attr('stroke-linejoin', 'round')
@@ -212,7 +223,7 @@ function renderTemporalTree() {
         .data(root.descendants())
         .join('g')
         .attr('id', d => nameToCode(d.data.label))
-        .attr('transform', d => `translate(${d.y}, ${d.x})`);
+        .attr('transform', d => `translate(${d.x}, ${d.y})`);
 
     node.append('circle')
         .attr('fill', d => {
@@ -231,7 +242,7 @@ function renderTemporalTree() {
     const yTextPlacement = Node.Radius;
     node.append('text')
         .attr('dy', '1em')
-        .attr('y', d => (d.depth % 2 === 0 ? -yTextPlacement - 15 : yTextPlacement))
+        .attr('y', yTextPlacement)
         .text(d => d.data.label)
         .clone(true)
         .lower()

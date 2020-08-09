@@ -100,7 +100,7 @@ async function parse(
     const graphs = {};
     function insertGraphs(g) {
         if (g instanceof SequenceTemporalNode) {
-            const rawGraph = g.sequence.cumulantSequence[g.sequence.length - 1];
+            const rawGraph = g.sequence.getLastCumulant();
             const graph = {
                 edges: Object.keys(rawGraph.vertices)
                     .map(ul => [...rawGraph.vertices[ul].outbound].map(vl => [ul, vl]))

@@ -202,7 +202,7 @@ function renderTemporalTree() {
     const nodeGroup = svg.append('g')
         .attr('font-family', 'sans-serif')
         .attr('font-size', 10)
-        .attr('transform', `translate(${2.25 * Margin}, ${Margin})`);
+        .attr('transform', `translate(${Margin + xDiff}, ${Margin})`);
 
     nodeGroup.append('g')
         .attr('fill', 'none')

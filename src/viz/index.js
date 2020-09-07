@@ -11,6 +11,7 @@ const Scale = 2;
 const Graph = {
     Width: 150,
     Height: 150,
+    Separation: 30,
 };
 const Node = {
     Width: 120,
@@ -23,8 +24,18 @@ const nameToCode = name => Buffer.from(name).toString('base64').replace(/\+|=/g,
 function renderGraph(graphName) {
     const { edges } = graphs[graphName];
 
+    const toPolarLayout = i => {
+        const cx = Graph.Width / 2 + Margin + Graph.Separation * Math.sin((2 * i * Math.PI) / n);
+        const cy = Graph.Height / 2 + Margin + Graph.Separation * -Math.cos((2 * i * Math.PI) / n);
+
+        return {
+            cx,
+            cy,
+        };
+    };
+
     // Create d3 Compatible Data
-    const nodes = vertices.map(v => ({ id: v }));
+    const nodes = vertices.map((v, i) => ({ id: v, ...toPolarLayout(i) }));
     const links = edges
         .map(([a, b]) => ({ source: a, target: b }))
         .filter(({ source, target }) => source !== target);
@@ -90,19 +101,19 @@ function renderGraph(graphName) {
     // Start force-based simulation
     const simulation = d3
         .forceSimulation(nodes)
-        .force('link', d3.forceLink(links).id(d => d.id).strength(0))
-        .force('charge', d3.forceManyBody().strength(-3))
-        .force('center', d3.forceCenter(Graph.Width / 2 + Margin, Graph.Height / 2 + Margin));
+        .force('link', d3.forceLink(links).id(d => d.id).strength(0));
+        // .force('charge', d3.forceManyBody().strength(-3))
+        // .force('center', d3.forceCenter(Graph.Width / 2 + Margin, Graph.Height / 2 + Margin));
 
     simulation.on('tick', () => {
         link
-            .attr('x1', d => d.source.x)
-            .attr('y1', d => d.source.y)
-            .attr('x2', d => d.target.x)
-            .attr('y2', d => d.target.y);
+            .attr('x1', d => d.source.cx)
+            .attr('y1', d => d.source.cy)
+            .attr('x2', d => d.target.cx)
+            .attr('y2', d => d.target.cy);
 
         node
-            .attr('transform', d => `translate(${d.x}, ${d.y})`);
+            .attr('transform', d => `translate(${d.cx}, ${d.cy})`);
     });
     // Simulation setup done
 }
@@ -130,8 +141,6 @@ root.each(d => {
     if (d.y < yMin) yMin = d.y;
 });
 const yDiff = yMax - yMin;
-console.log('yMax', yMax);
-console.log('yMin', yMin);
 
 function renderTopologicalTreeHelper(parent) {
     const svg = d3
@@ -153,7 +162,7 @@ function renderTopologicalTreeHelper(parent) {
             const selfCliqueTopologicalContainer = d3.select(document.getElementById(`${temporalNodeCode}-topological`)).data()[0];
 
             g.append('g')
-                .attr('transform', `translate(${Margin}, ${-xMin + Margin})`)
+                .attr('transform', `translate(${Margin}, ${Margin})`)
                 .attr('fill', 'none')
                 .attr('stroke', d3.interpolateRdBu(parseInt(id, 10) / (n - 1)))
                 .attr('stroke-opacity', 1)
@@ -192,6 +201,16 @@ function renderTopologicalTree() {
 }
 
 function renderTemporalTree() {
+    const toPolarLayout = i => {
+        const cx = Graph.Separation * Math.sin((2 * i * Math.PI) / n);
+        const cy = Graph.Separation * -Math.cos((2 * i * Math.PI) / n);
+
+        return {
+            cx,
+            cy,
+        };
+    };
+
     const svg = d3
         .select('#root')
         .append('svg')
@@ -202,7 +221,7 @@ function renderTemporalTree() {
     const nodeGroup = svg.append('g')
         .attr('font-family', 'sans-serif')
         .attr('font-size', 10)
-        .attr('transform', `translate(${Margin + xDiff}, ${Margin})`);
+        .attr('transform', `translate(${Margin + 250}, ${Margin})`);
 
     nodeGroup.append('g')
         .attr('fill', 'none')
@@ -249,7 +268,7 @@ function renderTemporalTree() {
         .attr('stroke', 'white');
 
     node.each(d => {
-        const nodes = vertices.map(v => ({ id: v }));
+        const nodes = vertices.map((v, i) => ({ id: v, ...toPolarLayout(i) }));
         const svgNode = d3.select(`#${nameToCode(d.data.label)}`);
 
         svgNode.append('svg:defs').selectAll('marker')
@@ -300,19 +319,19 @@ function renderTemporalTree() {
 
         const simulation = d3
             .forceSimulation(nodes)
-            .force('link', d3.forceLink(links).id(dl => dl.id).strength(0))
-            .force('charge', d3.forceManyBody().strength(-1))
-            .force('center', d3.forceCenter(0, 0));
+            .force('link', d3.forceLink(links).id(dl => dl.id).strength(0));
+            // .force('charge', d3.forceManyBody().strength(-1))
+            // .force('center', d3.forceCenter(0, 0));
 
         simulation.on('tick', () => {
             graphLink
-                .attr('x1', dl => dl.source.x)
-                .attr('y1', dl => dl.source.y)
-                .attr('x2', dl => dl.target.x)
-                .attr('y2', dl => dl.target.y);
+                .attr('x1', dl => dl.source.cx)
+                .attr('y1', dl => dl.source.cy)
+                .attr('x2', dl => dl.target.cx)
+                .attr('y2', dl => dl.target.cy);
 
             graphNode
-                .attr('transform', dd => `translate(${dd.x}, ${dd.y})`);
+                .attr('transform', dd => `translate(${dd.cx}, ${dd.cy})`);
         });
 
         // simulation.on('end', () => {
